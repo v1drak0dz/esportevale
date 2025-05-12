@@ -1,0 +1,324 @@
+* {
+    margin:0;
+    padding:0;
+    /* font-family: 'Open Sans', sans-serif; */
+    font-family: 'Roboto', sans-serif;
+    /* font-family: 'Lato', sans-serif; */
+    /* font-family: 'Merriweather', serif; */
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: 'Sansation', sans-serif;
+}
+
+body {
+    background-image: url("/content/2151952487.jpg");
+    background-size: 100dvw;
+    background-repeat: repeat-y;
+    background-position: center;
+    min-height: 100dvh;
+    max-width: 100dvw;
+}
+
+.navbar-brand {
+    background-image: url("/content/sjc.avif");
+    background-clip: text;
+    background-position: center;
+    background-size: cover;
+    color: transparent;
+    font-weight: bold;
+    font-size: 3rem !important;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.5));
+}
+
+/* Tabela de classificação */
+.table-classification--expansive {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-classification--expansive__header {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.table-classification--expansive__header th {
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.table-classification--expansive__header th:first-child {
+    text-align: left;
+    padding-left: 15px;
+}
+
+.table-classification--expansive__header th.-wide_col {
+    min-width: 30px;
+}
+
+.table-classification--expansive__body tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.table-classification--expansive__body tr:last-child {
+    border-bottom: none;
+}
+
+.table-classification--expansive__body tr:hover {
+    background-color: #f9f9f9;
+}
+
+.table-classification--expansive__body td {
+    padding: 12px 8px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-classification--expansive__body td:first-child {
+    text-align: left;
+    padding-left: 15px;
+}
+
+.table-classification--expansive__body td:nth-child(2) {
+    text-align: left;
+    font-weight: 500;
+}
+
+/* Cores para as linhas */
+.table-classification--expansive__body tr.-is-green {
+    background-color: rgba(46, 204, 113, 0.1);
+}
+
+.table-classification--expansive__body tr.-is-red {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Ícones e imagens dos times */
+.table-classification--expansive__icon {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.table-classification--expansive__icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* Ranking */
+.table-classification--expansive__ranking {
+    font-weight: bold;
+    display: inline-block;
+    min-width: 30px;
+}
+
+/* Últimos jogos */
+.table-classification--expansive__last-matches {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin: 0 2px;
+}
+
+.table-classification--expansive__last-matches.victories {
+    background-color: #2ecc71;
+}
+
+.table-classification--expansive__last-matches.ties {
+    background-color: #f39c12;
+}
+
+.table-classification--expansive__last-matches.defeats {
+    background-color: #e74c3c;
+}
+
+/* Cards de jogos */
+.card-match {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card-match__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #2c3e50;
+    color: white;
+}
+
+.card-match__header time {
+    font-weight: 500;
+}
+
+.card-match__bagde {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.card-match__bagde.center {
+    margin: 0 auto;
+}
+
+.card-match__bagde.after-game {
+    background-color: #3498db;
+    color: white;
+}
+
+.card-match__bagde.scheduling {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.card-match__bagde .icon {
+    margin-right: 5px;
+    display: inline-flex;
+}
+
+.card-match__bagde .icon svg {
+    width: 12px;
+    height: 12px;
+}
+
+.card-match__scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.card-match__score-team {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-match__score-team.home {
+    align-items: flex-end;
+}
+
+.card-match__score-team.away {
+    align-items: flex-start;
+}
+
+.card-team-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-match__score-team-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.card-match__short-name {
+    font-weight: 600;
+    text-align: center;
+}
+
+.card-match__score-result {
+    flex: 0 0 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-match__score-number {
+    font-size: 24px;
+    font-weight: 700;
+    min-width: 30px;
+    text-align: center;
+}
+
+.card-match__score-result .icon {
+    margin: 0 10px;
+}
+
+.card-match__score-result .icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .table-classification--expansive__header th,
+    .table-classification--expansive__body td {
+        padding: 8px 4px;
+        font-size: 12px;
+    }
+    
+    .table-classification--expansive__icon img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .card-match__scoreboard {
+        padding: 15px;
+    }
+    
+    .card-match__score-team-img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .card-match__score-number {
+        font-size: 20px;
+    }
+}
+
+/* RESPONSIVIDADE PARA TABELA */
+@media (max-width: 768px) {
+    .table-classification--expansive-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-classification--expansive {
+        width: 768px; /* largura mínima para manter a estrutura */
+    }
+}
+
+/* RESPONSIVIDADE PARA O CARD DO JOGO */
+@media (max-width: 600px) {
+    .card-match__scoreboard {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .card-match__score-result {
+        order: -1;
+        flex: 0 0 auto;
+    }
+
+    .card-match__score-team.home,
+    .card-match__score-team.away {
+        align-items: center;
+    }
+
+    .card-match__score-number {
+        font-size: 20px;
+    }
+}
