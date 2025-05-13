@@ -70,7 +70,8 @@ class DashboardController {
         if ($action === 'save') {
             $title = isset($_POST['title']) ? $_POST['title'] : null;
             $content = isset($_POST['content']) ? $_POST['content'] : null;
-            $this->news->addNews($title, $content, Session::getInstance()->get('user_id'));
+            $tags = isset($_POST['tags']) ? $_POST['tags'] : null;
+            $this->news->addNews($title, $content, $tags, Session::getInstance()->get('user_id'));
             header('Location: /dashboard/news');
             exit;
         } else {

@@ -175,9 +175,9 @@ body {
     text-transform: uppercase;
 }
 
-.card-match__bagde.center {
+/* .card-match__bagde.center {
     margin: 0 auto;
-}
+} */
 
 .card-match__bagde.after-game {
     background-color: #3498db;
@@ -304,12 +304,12 @@ body {
 /* RESPONSIVIDADE PARA O CARD DO JOGO */
 @media (max-width: 600px) {
     .card-match__scoreboard {
-        flex-direction: column;
+        /* flex-direction: column; */
         gap: 10px;
     }
 
     .card-match__score-result {
-        order: -1;
+        /* order: -1; */
         flex: 0 0 auto;
     }
 

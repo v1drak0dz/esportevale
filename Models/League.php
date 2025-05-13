@@ -57,7 +57,7 @@ class League
 
     public function getLeagues()
     {
-        $stmt = $this->pdo->query("SELECT id, nome, url, atualizado_em FROM leagues ORDER BY atualizado_em DESC");
+        $stmt = $this->pdo->query("SELECT * FROM leagues ORDER BY nome");
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 }

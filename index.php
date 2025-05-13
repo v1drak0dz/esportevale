@@ -30,8 +30,11 @@ add_route('/add_league', 'DashboardController@addLeague');
 add_route('/save_league', 'DashboardController@executeAddLeague');
 
 add_route('/league', 'LeagueController@atualizar');
+add_route('/league/tabela', 'LeagueController@index');
+add_route('/league/jogos', 'LeagueController@index');
 
 add_route('/news', 'HomeController@news');
+add_route('/news_index', 'HomeController@news_index');
 add_route('/send_commentary', 'HomeController@commentary');
 add_route('/like', 'HomeController@like');
 

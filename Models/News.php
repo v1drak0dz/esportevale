@@ -59,13 +59,49 @@ class News {
         }
     }
 
-    public function addNews($title, $content, $author) {
+    public function createPost($title, $content, $author) {
         $stmt = $this->db->prepare('INSERT INTO posts (title, content, author) VALUES (:title, :content, :author)');
         $filteredContent = strip_tags($content, $this->allowedTags);
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
         $stmt->bindParam(':content', $filteredContent, PDO::PARAM_STR);
         $stmt->bindParam(':author', $author, PDO::PARAM_INT);
         $stmt->execute();
+
+        return $this->db->lastInsertId();
+    }
+
+    public function createTag($tag) {
+        $stmt = $this->db->prepare('INSERT INTO tags (nome) VALUES (:tag)');
+        $stmt->bindParam(':tag', $tag, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $stmt = $this->db->prepare('SELECT id FROM tags WHERE nome = :tag');
+        $stmt->bindParam(':tag', $tag, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public function createPostTag($post_id, $tag_id) {
+        $stmt = $this->db->prepare('INSERT INTO post_tags (post_id, tag_id) VALUES (:post_id, :tag_id)');
+        $stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
+        $stmt->bindParam(':tag_id', $tag_id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function addNews($title, $content, $tags, $author) {
+        $postId = $this->createPost($title, $content, $author);
+
+        foreach (explode(',', $tags) as $tag) {
+            $tagId = $this->createTag($tag);
+            $this->createPostTag($postId, $tagId);
+        }
+    }
+
+    public function getPostTags($id) {
+        $stmt = $this->db->prepare("SELECT t.nome FROM tags t, post_tags pt WHERE t.id = pt.tag_id AND pt.post_id = :post_id");
+        $stmt->bindParam(':post_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function deleteNews($id) {

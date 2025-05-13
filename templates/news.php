@@ -6,11 +6,18 @@
     <div class="container bg-light py-2 mt-2 rounded shadow">
         <header>
         <h2><?php echo $news->post_title; ?></h2>
-        <small class="text-muted d-flex justify-content-end" style="font-size: .75rem;">
-            <p>
-            <?php echo 'Publicado em ' . date('d/m/Y H:i', strtotime($news->post_created)) . ', por ' . $news->post_author_name; ?>
-            </p>
-        </small>
+        <div class="d-flex justify-content-between">
+            <div>
+            <?php foreach ($tags as $tag): ?>
+                <span class="badge text-bg-info rounded-pill"><?php echo $tag->nome; ?></span>
+            <?php endforeach; ?>
+            </div>
+            <small class="text-muted" style="font-size: .75rem;">
+                <p>
+                <?php echo 'Publicado em ' . date('d/m/Y H:i', strtotime($news->post_created)) . ', por ' . $news->post_author_name; ?>
+                </p>
+            </small>
+        </div>
         </header>
         <hr class="mt-0">
         <main class="my-2"><?php echo $news->post_content; ?></main>

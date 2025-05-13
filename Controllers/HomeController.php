@@ -10,7 +10,7 @@ class HomeController {
     }
 
     public function index() {
-        $newslist = $this->news->getNews();
+        $newslist = $this->news->getNewsLimited(5);
         if (!$newslist) {
             $newslist = array();
             Session::getInstance()->setAlert(array('type' => 'info', 'text' => 'Nenhuma notícia encontrada.'));
@@ -22,8 +22,23 @@ class HomeController {
             Session::getInstance()->setAlert(array('type' => 'info', 'text' => 'Nenhuma liga encontrada.'));
         }
 
+        $leagues = $this->league->getLeagues();
+        
+
         include_once('components/header.php');
         include_once('templates/home.php');
+        include_once('components/footer.php');
+    }
+
+    public function news_index()
+    {
+        $newslist = $this->news->getNews();
+        if (!$newslist) {
+            $newslist = array();
+            Session::getInstance()->setAlert(array('type' => 'info', 'text' => 'Nenhuma notícia encontrada.'));
+        }
+        include_once('components/header.php');
+        include_once('templates/news_index.php');
         include_once('components/footer.php');
     }
 
@@ -47,6 +62,8 @@ class HomeController {
         $isLiked = $this->news->userLikedPost(Session::getInstance()->getUserId(), $news_id);
 
         $likeCount = $this->news->postLikeCount($news_id);
+
+        $tags = $this->news->getPostTags($news_id);
 
         include_once('components/header.php');
         include_once('templates/news.php');

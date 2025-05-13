@@ -38,6 +38,7 @@
 
 <section class="col-12 col-md-8">
     <div class="container bg-light py-2 mt-2 rounded shadow table-classification--expansive-wrapper">
+        <h2>Brasileirão Série A</h2>
         <?php echo $leaguetable->tabela_html; ?>
     </div>
             <!-- TODO: IMPLEMENTAR 1. Tabela de Classificação, 2. Última rodada -->

@@ -15,31 +15,27 @@ function isActive($url) {
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a href="/" class="nav-link <?php echo isActive('/') || isActive(''); ?>">Página Inicial</a>
+        </li>
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Tabelas
+            Campeonatos
           </a>
           <ul class="dropdown-menu">
-            <li class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Classificação
-              </a>
-              <ul class="dropdown-menu"></ul>
-            </li>
-            <li class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Rodadas
-              </a>
-              <ul class="dropdown-menu">
+            <?php foreach($leagues as $league): ?>
 
-              </ul>
-            </li>
+              <li class="nav-item">
+                <a href="/league/tabela?id=<?php echo $league->id; ?>" class="nav-link"><?php echo $league->nome; ?></a>
+              </li>
+
+            <?php endforeach; ?>
           </ul>
         </li>
+        <li class="nav-item">
+          <a href="/news_index" class="nav-link">Notícias</a>
+        </li>
         <?php if(Session::getInstance()->has('user')): ?>
-          <li class="nav-item">
-            <a href="/" class="nav-link <?php echo isActive('/') || isActive(''); ?>">Página Inicial</a>
-          </li>
           <li class="nav-item">
             <a class="nav-link <?php echo isActive('/dashboard/news'); ?>" href="/dashboard/news">Minhas Notícias</a>
           </li>

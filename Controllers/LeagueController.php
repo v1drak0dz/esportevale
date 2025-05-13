@@ -10,6 +10,15 @@ class LeagueController
         $this->league = new League();
     }
 
+    public function index()
+    {
+        $leagues = $this->league->getLeagues();
+        $l = $this->league->getLeagueById($_GET['id']);
+        include_once('components/header.php');
+        include_once('templates/leaguepage.php');
+        include_once('components/footer.php');
+    }
+
     public function atualizar()
     {
         if (!isset($_GET['id'])) {
