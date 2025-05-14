@@ -104,6 +104,21 @@ class News {
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
+    public function getNewsBySearch($query)
+    {
+        $query = "SELECT p.title, p.created_at, u.name FROM posts p, post_tags pt, tags t, users u WHERE u.id = p.author AND p.id = pt.post_id AND t.id = pt.tag_id";
+        $query .= " p.title LIKE :query OR p.content LIKE :query OR t.nome LIKE :query";
+        $query .= " ORDER BY created_at DESC";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':query', $query, PDO::PARAM_STR);
+        $stmt->execute();
+        $items = array();
+        while ($row = $stmt->fetchObject()) {
+            array_push($items, $row);
+        }
+        return $this->convertAndCheck($items);
+    }
+
     public function deleteNews($id) {
         $stmt = $this->db->prepare('DELETE FROM posts WHERE id = :id');
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);

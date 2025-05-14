@@ -1,5 +1,5 @@
 <div class="container bg-light mt-2 py-2">
-    <form action="/save_news" method="POST">
+    <form action="/news/add" method="POST">
         <div class="mb-3">
             <label for="title" class="form-label">Título</label>
             <input type="text" class="form-control" id="title" name="title" placeholder="Titulo da Notícia" value="<?php echo $news != null ? $news->post_title : ''; ?>">

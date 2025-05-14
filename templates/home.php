@@ -41,7 +41,6 @@
         <h2>Brasileirão Série A</h2>
         <?php echo $leaguetable->tabela_html; ?>
     </div>
-            <!-- TODO: IMPLEMENTAR 1. Tabela de Classificação, 2. Última rodada -->
 </section>
 
 <section class="col-12 col-md-4">
@@ -50,7 +49,7 @@
         <div class="my-2">
             <ul class="list-group list-group-flush">
                 <?php foreach ($newslist as $news): ?>
-                    <a class="list-group-item list-group-item-action my-1 shadow-sm rounded bg-white" href="/news?id=<?php echo $news->post_id; ?>">
+                    <a class="list-group-item list-group-item-action my-1 shadow-sm rounded bg-white" href="/news/show?id=<?php echo $news->post_id; ?>">
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1 has-text-uppercase border-bottom"><?php echo $news->post_title; ?></h5>
                         </div>

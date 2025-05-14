@@ -26,30 +26,30 @@ function isActive($url) {
             <?php foreach($leagues as $league): ?>
 
               <li class="nav-item">
-                <a href="/league/tabela?id=<?php echo $league->id; ?>" class="nav-link"><?php echo $league->nome; ?></a>
+                <a href="/leagues/show/tabela?id=<?php echo $league->id; ?>" class="nav-link"><?php echo $league->nome; ?></a>
               </li>
 
             <?php endforeach; ?>
           </ul>
         </li>
         <li class="nav-item">
-          <a href="/news_index" class="nav-link">Notícias</a>
+          <a href="/news/index" class="nav-link">Notícias</a>
         </li>
         <?php if(Session::getInstance()->has('user')): ?>
           <li class="nav-item">
-            <a class="nav-link <?php echo isActive('/dashboard/news'); ?>" href="/dashboard/news">Minhas Notícias</a>
+            <a class="nav-link <?php echo isActive('/news/dashboard'); ?>" href="/news/dashboard">Minhas Notícias</a>
           </li>
           <?php if(Session::getInstance()->isAdmin()): ?>
             <li class="nav-item">
-              <a id="minhas-ligas" class="nav-link <?php echo isActive('/dashboard/leagues'); ?>" href="/dashboard/leagues">Minhas Ligas</a>
+              <a id="minhas-ligas" class="nav-link <?php echo isActive('/leagues/dashboard'); ?>" href="/leagues/dashboard">Minhas Ligas</a>
             </li>
           <?php endif; ?>
           <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
+            <a class="nav-link" href="/auth/logout">Logout</a>
           </li>
         <?php else: ?>
           <li class="nav-item">
-            <a id="login" href="/login" class="nav-link">Login</a>
+            <a id="login" href="/auth/login" class="nav-link">Login</a>
           </li>
         <?php endif; ?>
       </ul>

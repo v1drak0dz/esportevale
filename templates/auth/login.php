@@ -8,7 +8,7 @@
 
     <div class="row justify-content-center">
         <div class="col-md-6">
-        <form class="form bg-body-tertiary p-3 rounded shadow my-2" method="post" action="/execute_login">
+        <form class="form bg-body-tertiary p-3 rounded shadow my-2" method="post" action="/auth/execute_login">
             <!-- Email input -->
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>

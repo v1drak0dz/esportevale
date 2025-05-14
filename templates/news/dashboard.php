@@ -3,7 +3,7 @@
 <section class="container my-5">
     <header class="container bg-light mb-2 rounded shadow d-flex justify-content-between align-items-center">
         <h1>Minhas notícias</h1>
-        <a href="/add_news" class="btn btn-primary">Adicionar Notícia</a>
+        <a href="/news/form" class="btn btn-primary">Adicionar Notícia</a>
     </header>
 
     
@@ -11,7 +11,7 @@
         <?php include_once('components/alert.php'); ?>
         <ul class="list-group list-group-flush">
             <?php foreach ($newslist as $news):?>
-                <li href="/news?id=<?php echo $news->id ?>" class="list-group-item d-flex justify-content-between my-2 shadow align-items-start">
+                <li class="list-group-item d-flex justify-content-between my-2 shadow align-items-start">
                     <div class="px-2">
 
                     <h5 class="mb-1"><?php echo $news->post_title; ?></h5>
@@ -29,9 +29,9 @@
                     </small>
                     </div>
                     <div class="buttons d-flex">
-                        <a href="/news?id=<?php echo $news->post_id; ?>" class="btn btn-primary mx-2">Ver</a>
-                        <a href="/add_news?id=<?php echo $news->post_id; ?>" class="btn btn-primary mx-2">Editar</a>
-                        <a href="/delete_news?id=<?php echo $news->post_id; ?>" class="btn btn-danger mx-2">Deletar</a>
+                        <a href="/news/show?id=<?php echo $news->post_id; ?>" class="btn btn-info mx-2">Ver</a>
+                        <a href="/news/form?id=<?php echo $news->post_id; ?>" class="btn btn-primary mx-2">Editar</a>
+                        <a href="/news/delete?id=<?php echo $news->post_id; ?>" class="btn btn-danger mx-2">Deletar</a>
                     </div>
                 </li>
             <?php endforeach; ?>

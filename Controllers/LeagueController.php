@@ -1,53 +1,67 @@
 <?php
 // LeagueController.php
 
-class LeagueController
+class LeagueController  extends BaseController
 {
-    private $league;
-
-    public function __construct()
-    {
-        $this->league = new League();
-    }
-
-    public function index()
-    {
+    public function dashboard() {
+        $leagueslist = $this->league->getLeagues();
         $leagues = $this->league->getLeagues();
-        $l = $this->league->getLeagueById($_GET['id']);
+        if (!$leagueslist) {
+            $leagueslist = array();
+            Session::getInstance()->setAlert(array('type' => 'info', 'text' => 'Nenhuma liga encontrada.'));
+        }
         include_once('components/header.php');
-        include_once('templates/leaguepage.php');
+        include_once('templates/leagues/dashboard.php');
         include_once('components/footer.php');
     }
 
-    public function atualizar()
+    public function add() {
+        $leagues = $this->league->getLeagues();
+        $league = null;
+        if (isset($_GET['id'])) {
+            $league = $this->league->getLeagueById($_GET['id']);
+            if (!$league) {
+                header('Location: /error/404');
+                exit;
+            }
+        }
+        include_once('components/header.php');
+        include_once('templates/leagues/form.php');
+        include_once('components/footer.php');
+    }
+
+    public function save() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /error/unauthorized');
+            exit;
+        }
+
+        $action = isset($_POST['action']) ? $_POST['action'] : null;
+
+        if ($action === 'save') {
+            $title = isset($_POST['title']) ? $_POST['title'] : null;
+            $table_content = isset($_POST['table_content']) ? $_POST['table_content'] : null;
+            $round_content = isset($_POST['round_content']) ? $_POST['round_content'] : null;
+            $this->league->atualizarLiga($title, $table_content, $round_content, Session::getInstance()->get('user_id'));
+            header('Location: /leagues/dashboard');
+            exit;
+        } else {
+            header('Location: /leagues/dashboard');
+            exit;
+        }
+    }
+
+    public function show()
     {
-        if (!isset($_GET['id'])) {
-            header('Location: /unauthorized');
-            exit();
+        $league_id = $_GET['id'];
+        $currLeague = $this->league->getLeagueById($league_id);
+        if (!$currLeague) {
+            header('Location: /error/404');
+            exit;
         }
-
-        $league_found = $this->league->getLeagueById($_GET['id']);
-
-        if (!$league_found) {
-            header('Location: /404');
-            exit();
-        }
-
-        $url = $league_found->url;
-        $nome = $league_found->nome;
-
-        echo htmlspecialchars($url);
-
-        $html = $this->fetch_page($url);
-        $tabela_html = $this->extrair_tabela($html);
-        $tabela_processada = $this->processar_celulas_time($tabela_html);
-
-        $rodada = $this->extrair_rodada($html);
-        $rodada_html = '<h3>' . htmlspecialchars($rodada['titulo']) . '</h3>' . $rodada['html'];
-
-        // Salva dados completos no banco
-        $this->league->salvarLiga($nome, $url, $tabela_processada, $rodada_html);
-
-        echo "Liga '" . htmlspecialchars($nome) . "' atualizada com sucesso.";
+        $leagues = $this->league->getLeagues();
+        include_once('components/header.php');
+        include_once('templates/leagues/index.php');
+        include_once('components/footer.php');
     }
 }

@@ -1,19 +1,15 @@
 <?php
 
-class AuthController {
-    private $users;
+class AuthController extends BaseController {
 
-    public function __construct() {
-        $this->users = new Users();
-    }
-
-    public function login() {
+    public function loginPage() {
+        $leagues = $this->league->getLeagues();
         include_once('components/header.php');
-        include_once('templates/login.php');
+        include_once('templates/auth/login.php');
         include_once('components/footer.php');
     }
 
-    public function executeLogin() {
+    public function loginAction() {
         if (isset($_POST['email']) && isset($_POST['password'])) {
             $email = $_POST['email'];
             $password = md5($_POST['password']); // Ainda funciona, mas é fraco para segurança moderna
@@ -27,12 +23,12 @@ class AuthController {
                 exit;
             } else {
                 Session::getInstance()->set('error', 'Usuário ou senha incorretos.');
-                header('Location: /login');
+                header('Location: /auth/login');
                 exit;
             }
         } else {
             Session::getInstance()->set('error', 'Preencha todos os campos.');
-            header('Location: /login');
+            header('Location: /auth/login');
             exit;
         }
     }
@@ -43,14 +39,15 @@ class AuthController {
         exit;
     }
 
-    public function register() {
+    public function registerPage() {
+        $leagues = $this->league->getLeagues();
         include_once('components/header.php');
-        include_once('templates/register.php');
+        include_once('templates/auth/register.php');
         include_once('components/footer.php');
     }
 
 
-    public function executeRegister() {
+    public function registerAction() {
         if (isset($_POST['name']) && isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
             $name = $_POST['name'];
             $username = $_POST['username'];
@@ -60,7 +57,7 @@ class AuthController {
             $user_id = $this->users->createUser($name, $username, $email, $password);
             if (!$user_id) {
                 Session::getInstance()->set('error', 'Usuário ou email já cadastrados.');
-                header('Location: /register');
+                header('Location: /auth/register');
                 exit;
             }
             $session = Session::getInstance();
@@ -70,7 +67,7 @@ class AuthController {
             exit;
         } else {
             Session::getInstance()->set('error', 'Preencha todos os campos.');
-            header('Location: /register');
+            header('Location: /auth/register');
             exit;
         }
     }

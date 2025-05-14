@@ -31,7 +31,7 @@
                 $('#like-btn').on('click', function() {
                     var postId = $(this).data('post-id');
 
-                    $.get("/like?id=" + postId, function(response) {
+                    $.get("/news/like?id=" + postId, function(response) {
                         var resposta = JSON.parse(response);
 
                         if (resposta.msg) {
@@ -58,7 +58,7 @@
 
     <div class="container bg-light py-2 mt-2 rounded shadow">
         <h3>Comentarios <span style="font-size: .75rem;">(<?php echo count($news_commentary); ?>)</span></h3>
-        <form action="/send_commentary?id=<?php echo $news->post_id; ?>" method="post">
+        <form action="/news/comment?id=<?php echo $news->post_id; ?>" method="post">
             <div class="mb-3 d-flex">
                 <input type="text" name="commentary" class="form-control" placeholder="Escreva seu comentário!">
                 <button type="submit" class="ms-2 btn btn-success">Enviar</button>
@@ -83,7 +83,7 @@
                     foreach ($relatedNews as $index => $news):
                         $isLast = ($index === $total - 1);
                 ?>
-                    <a class="list-group-item list-group-item-action my-2 rounded shadow" aria-current="true" href="#">
+                    <a class="list-group-item list-group-item-action my-2 rounded shadow" aria-current="true" href="/news/show?id=<?php echo $news->post_id; ?>">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1 has-text-uppercase border-bottom w-100"><?php echo $news->post_title; ?></h5>
                         </div>
