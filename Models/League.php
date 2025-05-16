@@ -60,4 +60,16 @@ class League
         $stmt = $this->pdo->query("SELECT * FROM leagues ORDER BY nome");
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
+
+    public function getMobileLeagues()
+    {
+        $stmt = $this->pdo->query("SELECT id, nome, tabela_html FROM leagues ORDER BY nome");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMobileRounds()
+    {
+        $stmt = $this->pdo->query("SELECT id, nome, rodada_html FROM leagues ORDER BY nome");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

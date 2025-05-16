@@ -8,7 +8,7 @@
 
     <div class="row justify-content-center">
         <div class="col-md-6">
-        <form class="form bg-body-tertiary p-3 rounded shadow my-2" method="post" action="/auth/execute_login">
+        <form class="form bg-body-tertiary p-3 rounded shadow my-2" method="post" action="/auth/login">
             <!-- Email input -->
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
@@ -18,7 +18,10 @@
             <div class="mb-3">
                 <label for="password" class="form-label">Senha</label>
                 <input type="password" id="password" name="password" class="form-control" placeholder="**********">
-                <a href="/register" class="link-info">Criar uma conta?</a>
+                <div class="d-flex justify-content-between p-2">
+                    <a href="/auth/register" class="link-info">Criar uma conta?</a>
+                    <a href="/auth/forgot" class="link-warning">Esqueceu a senha?</a>
+                </div>
             </div>
 
             <!-- Submit button -->

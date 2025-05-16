@@ -13,9 +13,14 @@ add_route('GET', '/', 'HomeController@index');
 add_route('GET', '/auth', function() {
     add_route('GET', '/login', 'AuthController@loginPage');
     add_route('POST', '/login', 'AuthController@loginAction');
+    
     add_route('GET', '/register', 'AuthController@registerPage');
     add_route('POST', '/register', 'AuthController@registerAction');
+    
     add_route('GET', '/logout', 'AuthController@logout');
+    
+    add_route('GET', '/forgot', 'AuthController@forgotPage');
+    add_route('POST', '/forgot', 'AuthController@forgotAction');
 });
 
 add_route('GET', '/leagues', function() {
@@ -37,6 +42,22 @@ add_route('GET', '/news', function() {
     add_route('POST', '/like', 'NewsController@like');
     add_route('POST', '/comment', 'NewsController@comment');
     add_route('GET', '/show', 'NewsController@show');
+});
+
+add_route('GET', '/mobile', function() {
+    add_route('POST', '/auth', 'MobileController@auth');
+    add_route('POST', '/save', 'MobileController@saveContent');
+    
+    add_route('GET', '/news', function() {
+        add_route('GET', '/get', 'MobileController@getContents');
+        add_route('GET', '/getAll', 'MobileController@getAllContents');
+        add_route('GET', '/getTags', 'MobileController@getPostTags');
+    });
+
+    add_route('GET', '/leagues', function() {
+        add_route('GET', '/getLeagues', 'MobileController@getLeagues');
+        add_route('GET', '/getRounds', 'MobileController@getRounds');
+    });
 });
 
 add_route('GET', '/error', function() {

@@ -1,9 +1,9 @@
 <?php
 // Armazena as rotas por método (GET, POST, etc.)
 $GLOBALS['routes'] = array(
-    'GET' => [],
-    'POST' => [],
-    'DELETE' => []
+    'GET' => array(),
+    'POST' => array(),
+    'DELETE' => array()
     // Adicione outros métodos se necessário
 );
 $GLOBALS['route_prefix'] = '';
@@ -14,8 +14,8 @@ function add_route($method, $uri, $controllerActionOrClosure, $authRequired = fa
     $prefix = rtrim($GLOBALS['route_prefix'], '/');
     $method = strtoupper($method); // Normaliza método
 
-    // Se for função anônima, trata como grupo
-    if (is_callable($controllerActionOrClosure)) {
+    // Se for função anônima (closure), trata como grupo
+    if (is_object($controllerActionOrClosure) && ($controllerActionOrClosure instanceof Closure)) {
         $previousPrefix = $GLOBALS['route_prefix'];
         $GLOBALS['route_prefix'] = $prefix . $uri;
 

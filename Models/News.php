@@ -101,7 +101,7 @@ class News {
         $stmt = $this->db->prepare("SELECT t.nome FROM tags t, post_tags pt WHERE t.id = pt.tag_id AND pt.post_id = :post_id");
         $stmt->bindParam(':post_id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
+        return $stmt->fetchColumn();
     }
 
     public function getNewsBySearch($query)

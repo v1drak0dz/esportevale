@@ -71,10 +71,11 @@ class NewsController extends BaseController
     
         foreach ($comments as $comment) {
             if ($comment['parent_id'] == $parent_id) {
-                echo "<div class='card mb-2' style='margin-left: {$marginLeft}px;'>";
+                echo "<div class='card mb-2 comentario' data-comment-id='{$comment['id']}' style='margin-left: {$marginLeft}px;'>";
                 echo "  <div class='card-body p-2'>";
                 echo "    <p class='mb-1'>{$comment['commentary']}</p>";
                 echo "    <small class='text-muted'>Comentário #{$comment['id']} | Autor ID: {$comment['user_name']} | " . date('d/m/Y H:i', strtotime($comment['created_at'])) . "</small>";
+                echo "    <button class='btn btn-link p-0 reply-btn' data-comment-id='{$comment['id']}'>Responder</button>";
                 echo "  </div>";
                 echo "</div>";
     
@@ -85,13 +86,13 @@ class NewsController extends BaseController
     }
 
     public function comment() {
-        $news_id = isset($_GET['id']) ? $_GET['id'] : null;
+        $news_id = isset($_POST['parent_id']) ? $_POST['parent_id'] : null;
         if ($news_id === null) {
             header('Location: /404');
             exit;
         }
-        $this->news->saveCommentary($news_id, $_POST['commentary'], Session::getInstance()->getUserId());
-        header('Location: /news/comment?id=' . $news_id);
+        $this->news->saveCommentary($news_id, $_POST['reply'], Session::getInstance()->getUserId());
+        header('Location: /news/show?id=' . $_GET['id']);
     }
 
     public function like() {

@@ -71,4 +71,12 @@ class AuthController extends BaseController {
             exit;
         }
     }
+
+    public function forgotPage()
+    {}
+
+    public function forgotAction()
+    {
+        
+    }
 }

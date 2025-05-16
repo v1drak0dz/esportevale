@@ -58,11 +58,13 @@
 
     <div class="container bg-light py-2 mt-2 rounded shadow">
         <h3>Comentarios <span style="font-size: .75rem;">(<?php echo count($news_commentary); ?>)</span></h3>
-        <form action="/news/comment?id=<?php echo $news->post_id; ?>" method="post">
-            <div class="mb-3 d-flex">
-                <input type="text" name="commentary" class="form-control" placeholder="Escreva seu comentário!">
-                <button type="submit" class="ms-2 btn btn-success">Enviar</button>
+        <form class="reply-form mt-2" method="post" action="/news/comment">
+            <div class="mb-2">
+                <textarea class="form-control" name="reply" rows="2" placeholder="Escreva sua resposta..."></textarea>
             </div>
+            <input type="hidden" name="parent_id" value="<?php echo $news->post_id ; ?>">
+            <button type="submit" class="btn btn-sm btn-primary">Enviar</button>
+            <button type="button" class="btn btn-sm btn-secondary cancel-reply">Cancelar</button>
         </form>
 
         <hr class="my-2">
@@ -100,6 +102,38 @@
         </div>
     </div>
 </section>
+
+<script>
+
+$(document).ready(function() {
+    $('.comentario').on('click', '.reply-btn', function(e) {
+        e.preventDefault();
+
+        $('.reply-form').remove();
+
+        var commentId = $(this).data('comment-id');
+
+        var replyFormHtml = `
+            <form class="reply-form mt-2" method="post" action="/news/comment">
+                <div class="mb-2">
+                    <textarea class="form-control" name="reply" rows="2" placeholder="Escreva sua resposta..."></textarea>
+                </div>
+                <input type="hidden" name="parent_id" value="` + commentId + `">
+                <button type="submit" class="btn btn-sm btn-primary">Enviar</button>
+                <button type="button" class="btn btn-sm btn-secondary cancel-reply">Cancelar</button>
+            </form>
+        `;
+
+        $(this).closest('.comentario').append(replyFormHtml);
+    });
+
+    $(document).on('click', '.cancel-reply', function(e) {
+        e.preventDefault();
+        $(this).closest('.reply-form').remove();
+    });
+});
+
+</script>
 
 </div>
 

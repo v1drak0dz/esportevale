@@ -17,10 +17,10 @@ class LeagueController  extends BaseController
 
     public function add() {
         $leagues = $this->league->getLeagues();
-        $league = null;
+        $l = null;
         if (isset($_GET['id'])) {
-            $league = $this->league->getLeagueById($_GET['id']);
-            if (!$league) {
+            $l = $this->league->getLeagueById($_GET['id']);
+            if (!$l) {
                 header('Location: /error/404');
                 exit;
             }

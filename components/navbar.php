@@ -7,7 +7,7 @@ function isActive($url) {
 <nav class="navbar navbar-expand-lg bg-body-tertiary d-flex justify-content-between">
   <div class="container align-items-center justify-content-around">
     <a class="navbar-brand" href="/">
-      <img src="/content/esportevale.png" alt="Esporte Vale" width="72">
+      <img src="/content/esportevale-removebg-preview.png" alt="Esporte Vale" width="72">
       Esporte Vale
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
