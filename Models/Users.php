@@ -45,26 +45,21 @@ class Users {
 
     public function storeToken($userId, $token)
     {
-        // Calcula a data de expiração 24h a partir do agora
-        $expiresDate = date('Y-m-d H:i:s', time() + 24 * 60 * 60);
 
-        $sql = "INSERT OR REPLACE INTO user_tokens (user_id, token, created_at, expires_at) VALUES (:user_id, :token, datetime('now'), :expires_date)";
+        $sql = "INSERT OR REPLACE INTO user_tokens (user_id, token, created_at, expires_at) VALUES (:user_id, :token, datetime('now'), NULL)";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindParam(':token', $token);
-        $stmt->bindParam(':expires_date', $expiresDate);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
         return $stmt->execute();
     }
 
     // Validação do token
     public function validateToken($token)
     {
-        $now = date('Y-m-d H:i:s');
 
-        $sql = "SELECT user_id FROM user_tokens WHERE token = :token AND expires_at > :now";
+        $sql = "SELECT user_id FROM user_tokens WHERE token = :token";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':token', $token);
-        $stmt->bindParam(':now', $now);
         $stmt->execute();
 
         return $stmt->fetchColumn(); // retorna user_id ou false

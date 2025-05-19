@@ -30,11 +30,20 @@ class League
 
     public function atualizarLiga($nome, $tabelaHtml, $rodadaHtml)
     {
-        $stmt = $this->pdo->prepare("UPDATE leagues SET tabela_html = :tabela, rodada_html = :rodada WHERE nome = :nome");
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':tabela', $tabelaHtml);
-        $stmt->bindParam(':rodada', $rodadaHtml);
-        $stmt->execute();
+        try {
+            $now = date('Y-m-d H:i:s');
+            $stmt = $this->pdo->prepare("UPDATE leagues SET tabela_html = :tabela, rodada_html = :rodada, atualizado_em = :now WHERE nome = :nome");
+            $stmt->bindParam(':nome', $nome, PDO::PARAM_STR);
+            $stmt->bindParam(':tabela', $tabelaHtml, PDO::PARAM_STR);
+            $stmt->bindParam(':rodada', $rodadaHtml, PDO::PARAM_STR);
+            $stmt->bindParam(':now', $now, PDO::PARAM_STR);
+            $stmt->execute();
+            return true;
+        }
+        catch (Exception $e) {
+            return $e->getMessage();
+        }
+        
     }
 
 

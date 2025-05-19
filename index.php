@@ -6,6 +6,7 @@ require_once('src/database.php');
 require_once('src/session.php');
 require_once('src/utils.php');
 
+date_default_timezone_set('America/Sao_Paulo');
 $session = new Session();
 
 add_route('GET', '/', 'HomeController@index');
@@ -44,8 +45,18 @@ add_route('GET', '/news', function() {
     add_route('GET', '/show', 'NewsController@show');
 });
 
+// Automation Purposes
+add_route('GET', '/bot', function() {
+    add_route('POST', '/save', 'BotController@saveLeague');
+});
+
+// Mobile
 add_route('GET', '/mobile', function() {
-    add_route('POST', '/auth', 'MobileController@auth');
+    add_route('POST', '/auth', function() {
+        add_route('POST', '/login', 'MobileController@login');
+        add_route('POST', '/register', 'MobileController@register');
+    });
+
     add_route('POST', '/save', 'MobileController@saveContent');
     
     add_route('GET', '/news', function() {

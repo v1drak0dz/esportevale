@@ -60,11 +60,13 @@ class News {
     }
 
     public function createPost($title, $content, $author) {
-        $stmt = $this->db->prepare('INSERT INTO posts (title, content, author) VALUES (:title, :content, :author)');
+        $stmt = $this->db->prepare('INSERT INTO posts (title, content, author, created_at) VALUES (:title, :content, :author, :created_at)');
         $filteredContent = strip_tags($content, $this->allowedTags);
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
         $stmt->bindParam(':content', $filteredContent, PDO::PARAM_STR);
         $stmt->bindParam(':author', $author, PDO::PARAM_INT);
+        $created_at = date('Y-m-d H:i:s');
+        $stmt->bindParam(':created_at', $created_at, PDO::PARAM_STR);
         $stmt->execute();
 
         return $this->db->lastInsertId();

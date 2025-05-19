@@ -7,3 +7,6 @@
 
     RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
+<IfModule mod_setenvif.c>
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+</IfModule>
