@@ -14,21 +14,42 @@ h1,h2,h3,h4,h5,h6 {
 body {
     background-image: url("/content/2151952487.jpg");
     background-size: 100dvw;
-    background-repeat: repeat-y;
-    background-position: center;
+    /* background-repeat: repeat-y */
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
     min-height: 100dvh;
     max-width: 100dvw;
 }
 
+#top_ad {
+    display: flex;
+}
+
+#bottom_ad {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    #top_ad {
+        display: none;
+    }
+    #bottom_ad {
+        display: flex;
+    }
+    
+}
+
 .navbar-brand {
-    background-image: url("/content/sjc.avif");
+    /* background-image: url("/content/sjc.avif");
     background-clip: text;
     background-position: center;
-    background-size: cover;
-    color: transparent;
+    background-size: cover; */
+    color: black;
     font-weight: bold;
     font-size: 3rem !important;
     filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.5));
+    text-transform: lowercase;
 }
 
 /* Tabela de classificação */

@@ -981,3 +981,23 @@
 [18-May-2025 00:34:04 America/Sao_Paulo] PHP Parse error:  syntax error, unexpected '[', expecting ')' in /home/esportevalecom/public_html/Controllers/MobileController.php on line 30
 [18-May-2025 00:34:56 America/Sao_Paulo] PHP Parse error:  syntax error, unexpected '[', expecting ')' in /home/esportevalecom/public_html/Controllers/MobileController.php on line 30
 [18-May-2025 00:35:15 America/Sao_Paulo] PHP Parse error:  syntax error, unexpected '[', expecting ')' in /home/esportevalecom/public_html/Controllers/MobileController.php on line 30
+[05-Jun-2025 22:27:29 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:27:29 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:27:29 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:27:29 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:27:29 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:36:47 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:36:47 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:36:47 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:36:47 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:36:47 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:43:31 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:43:31 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:43:31 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:43:31 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:43:31 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:46:52 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:46:52 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:46:52 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:46:52 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77
+[05-Jun-2025 22:46:52 America/Sao_Paulo] PHP Notice:  Undefined offset: 0 in /home/esportevalecom/public_html/templates/leagues/index.php on line 77

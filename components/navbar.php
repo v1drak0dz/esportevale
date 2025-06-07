@@ -8,7 +8,7 @@ function isActive($url) {
   <div class="container align-items-center justify-content-around">
     <a class="navbar-brand" href="/">
       <img src="/content/esportevale-removebg-preview.png" alt="Esporte Vale" width="72">
-      Esporte Vale
+      EsporteVale
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -26,7 +26,7 @@ function isActive($url) {
             <?php foreach($leagues as $league): ?>
 
               <li class="nav-item">
-                <a href="/leagues/show/tabela?id=<?php echo $league->id; ?>" class="nav-link"><?php echo $league->nome; ?></a>
+                <a href="/leagues/show/tabela?campeonato=<?php echo $league->nome; ?>" class="nav-link"><?php echo $league->nome; ?></a>
               </li>
 
             <?php endforeach; ?>

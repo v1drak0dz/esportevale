@@ -9,7 +9,7 @@
         <div class="d-flex justify-content-between">
             <div>
             <?php foreach ($tags as $tag): ?>
-                <span class="badge text-bg-info rounded-pill"><?php echo $tag->nome; ?></span>
+                <span class="badge text-bg-info rounded-pill"><?php echo $tag['nome']; ?></span>
             <?php endforeach; ?>
             </div>
             <small class="text-muted" style="font-size: .75rem;">

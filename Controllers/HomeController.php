@@ -16,6 +16,9 @@ class HomeController extends BaseController {
         }
 
         $leagues = $this->league->getLeagues();
+        
+        $cur_league = $this->league->getClassification('Brasileirão Série A');
+        $rows_count = count($cur_league);
 
         include_once('components/header.php');
         include_once('templates/home.php');

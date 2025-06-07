@@ -16,15 +16,17 @@ class LeagueController  extends BaseController
     }
 
     public function add() {
-        $leagues = $this->league->getLeagues();
-        $l = null;
-        if (isset($_GET['id'])) {
-            $l = $this->league->getLeagueById($_GET['id']);
-            if (!$l) {
-                header('Location: /error/404');
-                exit;
+        $league_id = $_GET['campeonato'];
+        $currLeague = $this->league->getMatches($league_id);
+
+        $rodada_atual_header = 0;
+        for ($i = count($currLeague); $i > 0; $i--) {
+            if ($currLeague[$i-1]['finalizada'] == 1) {
+                $rodada_atual_header = $currLeague[$i-1]['rodada'];
+                break;
             }
         }
+        $leagues = $this->league->getLeagues();
         include_once('components/header.php');
         include_once('templates/leagues/form.php');
         include_once('components/footer.php');
@@ -63,5 +65,67 @@ class LeagueController  extends BaseController
         include_once('components/header.php');
         include_once('templates/leagues/index.php');
         include_once('components/footer.php');
+    }
+
+    public function getClassification()
+    {
+        $league_id = $_GET['campeonato'];
+        $currLeague = $this->league->getClassification($league_id);
+        if (!$currLeague) {
+            header('Location: /error/404');
+            exit;
+        }
+        
+        $matches = $this->league->getMatches($league_id);
+        $rodada_atual_header = 0;
+        for ($i = count($matches); $i > 0; $i--) {
+            if ($matches[$i-1]['finalizada'] == 1) {
+                $rodada_atual_header = $matches[$i-1]['rodada'];
+                break;
+            }
+        }
+        $rows_count = count($currLeague);
+        $leagues = $this->league->getLeagues();
+        include_once('components/header.php');
+        include_once('templates/leagues/index.php');
+        include_once('components/footer.php');
+    }
+
+    public function getMatches()
+    {
+        $league_id = $_GET['campeonato'];
+        $currLeague = $this->league->getMatches($league_id);
+        $rodada_atual = $_GET['rodada'];
+        if (!$currLeague) {
+            header('Location: /error/404');
+            exit;
+        }
+
+        $rodada_atual_header = 0;
+        for ($i = count($currLeague); $i > 0; $i--) {
+            if ($currLeague[$i-1]['finalizada'] == 1) {
+                $rodada_atual_header = $currLeague[$i-1]['rodada'];
+                break;
+            }
+        }
+
+        $rodadas_filtradas = array();
+        foreach($currLeague as $rodada) {
+            if ($rodada['rodada'] == $rodada_atual) {
+                array_push($rodadas_filtradas, $rodada);
+            }
+        }
+        $rodadas = array($rodada_atual-2, $rodada_atual-1, $rodada_atual, $rodada_atual+1, $rodada_atual+2);
+        $leagues = $this->league->getLeagues();
+        include_once('components/header.php');
+        include_once('templates/leagues/index.php');
+        include_once('components/footer.php');
+    }
+
+    public function update()
+    {
+        $this->league->update($_POST);
+        header('Location: /leagues/dashboard');
+        exit;
     }
 }

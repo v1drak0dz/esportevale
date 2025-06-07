@@ -12,4 +12,9 @@ class BaseController
         $this->league = new League();
         $this->users = new Users();
     }
+
+    public function receivePostKey($key)
+    {
+        return isset($_POST[$key]) ? $_POST[$key] : null;
+    }
 }

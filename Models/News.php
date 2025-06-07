@@ -73,7 +73,7 @@ class News {
     }
 
     public function createTag($tag) {
-        $stmt = $this->db->prepare('INSERT INTO tags (nome) VALUES (:tag)');
+        $stmt = $this->db->prepare('INSERT OR IGNORE INTO tags (nome) VALUES (:tag)');
         $stmt->bindParam(':tag', $tag, PDO::PARAM_STR);
         $stmt->execute();
 
@@ -94,7 +94,8 @@ class News {
         $postId = $this->createPost($title, $content, $author);
 
         foreach (explode(',', $tags) as $tag) {
-            $tagId = $this->createTag($tag);
+            error_log('tag: ' . $tag);
+            $tagId = $this->createTag(trim($tag));
             $this->createPostTag($postId, $tagId);
         }
     }
@@ -103,7 +104,7 @@ class News {
         $stmt = $this->db->prepare("SELECT t.nome FROM tags t, post_tags pt WHERE t.id = pt.tag_id AND pt.post_id = :post_id");
         $stmt->bindParam(':post_id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchColumn();
+        return $stmt->fetchAll();
     }
 
     public function getNewsBySearch($query)

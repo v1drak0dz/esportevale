@@ -58,12 +58,22 @@ class NewsController extends BaseController
         $likeCount = $this->news->postLikeCount($news_id);
 
         $tags = $this->news->getPostTags($news_id);
-
+        if (!$tags) {
+            $tags = array();
+        }
         $leagues = $this->league->getLeagues();
 
         include_once('components/header.php');
         include_once('templates/news/show.php');
         include_once('components/footer.php');
+    }
+
+    public function all() {
+        $news = $this->news->getNews();
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type");
+        echo json_encode($news);
     }
 
     private function renderComments($comments, $parent_id = null, $level = 0) {

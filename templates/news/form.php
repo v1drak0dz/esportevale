@@ -6,7 +6,7 @@
         </div>
         <div class="mb-3">
             <label for="tags" class="form-">Tags</label>
-            <input type="text" class="form-control" id="tags" name="title" placeholder="Tags da Notícia: série A, Amador, Flamengo...">
+            <input type="text" class="form-control" id="tags" name="tags" placeholder="Tags da Notícia: série A, Amador, Flamengo...">
         </div>
         <div class="mb-3">
             <label for="content" class="form-label">Conteúdo</label>

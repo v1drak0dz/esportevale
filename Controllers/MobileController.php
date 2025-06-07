@@ -13,7 +13,7 @@ class MobileController extends BaseController
         $password = isset($data['password']) ? $data['password'] : (isset($_POST['password']) ? $_POST['password'] : null);
 
         if ($email && $password) {
-            $passwordHash = md5($password);
+            $passwordHash  = md5($password);
             $authenticated = $this->users->checkAuth($email, $passwordHash);
 
             if ($authenticated) {
@@ -30,14 +30,14 @@ class MobileController extends BaseController
                     ),
                 ));
             } else {
-                header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized");
+                header($_SERVER["SERVER_PROTOCOL"] . " 401 Unauthorized");
                 echo json_encode(array(
                     'success' => false,
                     'message' => 'Credenciais inválidas',
                 ));
             }
         } else {
-            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+            header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
             echo json_encode(array(
                 'success' => false,
                 'message' => 'Email e senha são obrigatórios',
@@ -59,8 +59,8 @@ class MobileController extends BaseController
         $email    = isset($data['email']) ? $data['email'] : (isset($_POST['email']) ? $_POST['email'] : null);
         $password = isset($data['password']) ? $data['password'] : (isset($_POST['password']) ? $_POST['password'] : null);
 
-        if (!$name || !$username || !$email || !$password) {
-            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+        if (! $name || ! $username || ! $email || ! $password) {
+            header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
             echo json_encode(array(
                 'success' => false,
                 'message' => 'Nome, usuário, email e senha são obrigatórios',
@@ -69,7 +69,7 @@ class MobileController extends BaseController
         }
 
         $passwordHash = md5($password);
-        $userId = $this->users->createUser($name, $username, $email, $passwordHash);
+        $userId       = $this->users->createUser($name, $username, $email, $passwordHash);
 
         if ($userId) {
             echo json_encode(array(
@@ -83,7 +83,7 @@ class MobileController extends BaseController
                 ),
             ));
         } else {
-            header($_SERVER["SERVER_PROTOCOL"]." 409 Conflict");
+            header($_SERVER["SERVER_PROTOCOL"] . " 409 Conflict");
             echo json_encode(array(
                 'success' => false,
                 'message' => 'Nome de usuário ou email já estão em uso',
@@ -105,35 +105,35 @@ class MobileController extends BaseController
         $headers = array();
         foreach ($_SERVER as $key => $value) {
             if (substr($key, 0, 5) === 'HTTP_') {
-                $header = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                $header           = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
                 $headers[$header] = $value;
             }
         }
 
-        if (!isset($headers['Authorization'])) {
-            header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized");
+        if (! isset($headers['Authorization'])) {
+            header($_SERVER["SERVER_PROTOCOL"] . " 401 Unauthorized");
             echo json_encode(array('success' => false, 'message' => 'Token não fornecido'));
             exit;
         }
 
         $authHeader = $headers['Authorization'];
-        $parts = explode(' ', $authHeader);
+        $parts      = explode(' ', $authHeader);
         if (count($parts) != 2 || $parts[0] !== 'Bearer') {
-            header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized");
+            header($_SERVER["SERVER_PROTOCOL"] . " 401 Unauthorized");
             echo json_encode(array('success' => false, 'message' => 'Token inválido'));
             exit;
         }
 
-        $token = $parts[1];
+        $token  = $parts[1];
         $userId = $this->validateToken($token);
-        if (!$userId) {
-            header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized");
+        if (! $userId) {
+            header($_SERVER["SERVER_PROTOCOL"] . " 401 Unauthorized");
             echo json_encode(array('success' => false, 'message' => 'Token inválido'));
             exit;
         }
 
-        if (!isset($_POST['title']) || !isset($_POST['content'])) {
-            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+        if (! isset($_POST['title']) || ! isset($_POST['content'])) {
+            header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
             echo json_encode(array('success' => false, 'message' => 'Título e conteúdo são obrigatórios'));
             exit;
         }
@@ -162,23 +162,23 @@ class MobileController extends BaseController
         $headers = array();
         foreach ($_SERVER as $key => $value) {
             if (substr($key, 0, 5) === 'HTTP_') {
-                $header = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                $header           = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
                 $headers[$header] = $value;
             }
         }
 
         error_log("Headers: " . json_encode($headers));
 
-        if (!isset($headers['Authorization'])) {
-            header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized");
+        if (! isset($headers['Authorization'])) {
+            header($_SERVER["SERVER_PROTOCOL"] . " 401 Unauthorized");
             echo json_encode(array('success' => false, 'message' => 'Token não fornecido'));
             exit;
         }
 
         $authHeader = $headers['Authorization'];
-        $parts = explode(' ', $authHeader);
+        $parts      = explode(' ', $authHeader);
         if (count($parts) != 2 || $parts[0] !== 'Bearer') {
-            header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized");
+            header($_SERVER["SERVER_PROTOCOL"] . " 401 Unauthorized");
             echo json_encode(array('success' => false, 'message' => 'Token inválido: ' . $authHeader));
             exit;
         }
@@ -188,8 +188,8 @@ class MobileController extends BaseController
 
         $userId = $this->validateToken($token);
         error_log('User found' . $userId);
-        if (!$userId) {
-            header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized");
+        if (! $userId) {
+            header($_SERVER["SERVER_PROTOCOL"] . " 401 Unauthorized");
             echo json_encode(array('success' => false, 'message' => 'Token inválido: ' . $token));
             exit;
         }
@@ -202,17 +202,28 @@ class MobileController extends BaseController
 
     public function getPostTags()
     {
-        if (!isset($_GET['id'])) {
-            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+        if (! isset($_GET['id'])) {
+            header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
             echo json_encode(array('success' => false, 'message' => 'ID do conteúdo não fornecido'));
             exit;
         }
 
         $postId = $_GET['id'];
-        $tags = $this->news->getPostTags($postId);
-        error_log('tag are: ' . $tags);
+        $tags   = $this->news->getPostTags($postId);
+        $result = array();
+        foreach ($tags as $tag) {
+            array_push($result, trim($tag['nome']));
+        }
 
-        echo json_encode(array('success' => true, 'tags' => $tags));
+        echo json_encode(array('success' => true, 'tags' => $result));
+        exit;
+    }
+
+    public function getComments()
+    {
+        $id       = $_GET['id'];
+        $comments = $this->news->getNewsCommentary($id);
+        echo json_encode(array('success' => true, 'comments' => $comments));
         exit;
     }
 
