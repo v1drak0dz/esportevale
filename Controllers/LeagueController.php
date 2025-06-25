@@ -15,9 +15,16 @@ class LeagueController  extends BaseController
         include_once('components/footer.php');
     }
 
+    public function create() {
+        include_once('components/header.php');
+        include_once('templates/leagues/createLeague.php');
+        include_once('components/footer.php');
+    }
+
     public function add() {
         $league_id = $_GET['campeonato'];
         $currLeague = $this->league->getMatches($league_id);
+        $teams = $this->league->getTeams($league_id);
 
         $rodada_atual_header = 0;
         for ($i = count($currLeague); $i > 0; $i--) {
@@ -61,6 +68,7 @@ class LeagueController  extends BaseController
             header('Location: /error/404');
             exit;
         }
+        
         $leagues = $this->league->getLeagues();
         include_once('components/header.php');
         include_once('templates/leagues/index.php');
@@ -115,7 +123,22 @@ class LeagueController  extends BaseController
                 array_push($rodadas_filtradas, $rodada);
             }
         }
-        $rodadas = array($rodada_atual-2, $rodada_atual-1, $rodada_atual, $rodada_atual+1, $rodada_atual+2);
+
+        $rodadasRaw = $this->league->getRodadasNumber($league_id);
+
+        $rodadasRaw = array_map('intval', $rodadasRaw);
+
+        $rodadas = array();
+
+        if (!empty($rodadasRaw) && isset($rodada_atual)) {
+            // Gera um array com -2 até +2 da rodada atual
+            for ($i = -2; $i <= 2; $i++) {
+                $rodada = $rodada_atual + $i;
+                if (in_array($rodada, $rodadasRaw)) {
+                    array_push($rodadas,$rodada);
+                }
+            }
+        }
         $leagues = $this->league->getLeagues();
         include_once('components/header.php');
         include_once('templates/leagues/index.php');

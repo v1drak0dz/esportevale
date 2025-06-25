@@ -39,9 +39,7 @@ class BotController extends BaseController {
         $name = isset($_POST['name']) ? $_POST['name'] : null;
         $brasao = isset($_POST['brasao']) ? $_POST['brasao'] : null;
         $league = isset($_POST['campeonato']) ? $_POST['campeonato'] : null;
-        error_log("nome: " . $name . "\nbrasao: " . $brasao . "\ncampeonato: " . $league);
         $response = $this->league->atualizarTimes($name, $brasao, $league);
-        error_log("response: " . $response);
         if ($response === true) {
             echo json_encode(array('success' => true, 'message' => 'Times atualizados com sucesso!'));
             exit;
@@ -61,31 +59,36 @@ class BotController extends BaseController {
         }
 
         $data = json_decode(file_get_contents('php://input'), true);
+        // Atualiza os times
+        error_log(print_r($data));
+        $this->league->atualizarTimes($data["homeTeam"], $data["shieldHome"], $data["league"]);
+        $this->league->atualizarTimes($data["outerTeam"], $data['shieldOuter'], $data["league"]);
 
-        $league = $data["league"];
-        $group = $data["group"];
-        $match = $data["match"];
-        $date = $data["date"];
-        $outerTeam = $data["outerTeam"];
-        $homeTeam = $data["homeTeam"];
-        $goalsOuter = $data["goalsOuter"];
-        $goalsHome = $data["goalsHome"];
-        $ended = $data["ended"];
-        // $league = $this->receivePostKey("league");
-        // $group = $this->receivePostKey("group");
-        // $match = $this->receivePostKey("match");
-        // $date = $this->receivePostKey("date");
-        // $outerTeam = $this->receivePostKey("outerTeam");
-        // $homeTeam = $this->receivePostKey("homeTeam");
-        // $goalsOuter = $this->receivePostKey("goalsOuter");
-        // $goalsHome = $this->receivePostKey("goalsHome");
-        // $ended = $this->receivePostKey("ended");
-
+        // Atualiza as partidas
         $this->league->saveMatch(
-            $league, $group, $match,
-            $date, $outerTeam, $homeTeam,
-            $goalsHome, $goalsOuter, $ended
+            $data["league"], $data["group"], $data["match"],
+            $data["date"], $data["outerTeam"], $data["homeTeam"],
+            $data["goalsHome"], $data["goalsOuter"], $data["ended"]
         );
+
+        echo json_encode(array('success' => true, 'message' => 'Partidas atualizadas com sucesso!'));
+        exit;
+    }
+
+    private function saveShield($content) {
+        $uploadDir = dirname(__DIR__) . '/../public/img/shields/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $filename = uniqid('img_', true) . '.webp';
+        $filepath = $uploadDir . $filename;
+        if (file_put_contents($filepath, base64_decode($content))) {
+            $publicPath = '/img/shields/' . $filename;
+            return $publicPath;
+        } else {
+            return false;
+        }
     }
 
     private function validate()

@@ -3,17 +3,118 @@
     <select name="leagues" class="form-select mb-3" id="league-match">
         <option value="0">Selecione uma rodada</option>
     </select>
+    <div class="d-flex justify-content-center flex-column align-items-center">
         <h3 class="text-center">Partidas</h3>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target=".modal">Criar Partida</button>
+        </div>
         <div style="text-align: center;      font-size: 24px;">
-  <span style="letter-spacing: 2px;">───────────────</span>
+  <span style="letter-spacing: 0;">───────────────</span>
   <span style="color: black;">●</span>
-  <span style="letter-spacing: 2px;">───────────────</span>
+  <span style="letter-spacing: 0;">───────────────</span>
 </div>
         <div id="cards-container" class="row col-12 col-lg-6 col-md-6 col-sm-12 w-100"></div>
         <!-- Toast container -->
 <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055;"></div>
 
+<div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Criar Partida</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/leagues/add" method="POST" class="row">
+                    <div class="mb-3 col-md-6">
+                        <label for="date" class="form-label">Data</label>
+                        <input type="text" name="date" value="<?php echo date('d-m-Y'); ?>" class="form-control">
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="round" class="form-label">Rodada</label>
+                        <input type="number" name="round" min="1" value='1' class="form-control">
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="home-team" class="form-label">Time Casa</label>
+                            <select name="home-team" id="home-team" class="form-select">
+                                <?php $seleacted_team = array_rand($teams); ?>
+                                <?php foreach($teams as $team): ?>
+                                    <option data-img="<?php echo $team['brasao_url']; ?>" <?php echo $team['time_nome'] == $teams[$seleacted_team]['time_nome'] ? 'selected' : ''; ?> value="<?php echo $team['time_nome']; ?>">
+                                        <?php echo $team['time_nome']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="outer-team" class="form-label">Time Fora</label>
+                            <select name="outer-team" id="outer-team" class="form-select">
+                                <?php $seleacted_team = array_rand($teams); ?>
+                                <?php foreach($teams as $team): ?>
+                                    <option data-img="<?php echo $team['brasao_url']; ?>" <?php echo $team['time_nome'] == $teams[$seleacted_team]['time_nome'] ? 'selected' : ''; ?> value="<?php echo $team['time_nome']; ?>">
+                                        <?php echo $team['time_nome']; ?>
+                                    </option>
+                                    
+                                <?php endforeach; ?>
+                            </select>
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="home-goals" class="form-label">Gols Casa</label>
+                        <input type="number" name="home-goals" value='0' class="form-control">
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="outer-goals" class="form-label">Gols Fora</label>
+                        <input type="number" name="outer-goals" value='0' class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <input type="checkbox" class="form-check-input" name="finalizada">
+                        <label for="finalizada" class="form-check-label">Finalizada</label>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Criar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+</div>
+
+<style>
+    .select2-container {
+        z-index: 9999!important;
+    }
+</style>
+
+
+<script>
+    $(document).ready(function() {
+        
+        $("#home-team").select2({
+            theme: 'bootstrap-5',
+            templateResult: function (data) {
+                if (!data.id) return data.text;
+                var img = $(data.element).data('img');
+                return $("<span style='display: flex; align-items:center;'><img src='" + img + "' style='width: 24px;'>" + data.text + "</span>");
+            },
+            templateSelection: function (data) {
+                var img = $(data.element).data('img');
+                return $("<span style='display: flex; align-items:center;'><img src='" + img + "' style='width: 24px;'>" + data.text + "</span>");
+            }
+        })
+        $("#outer-team").select2({
+            theme: 'bootstrap-5',
+            templateResult: function (data) {
+                if (!data.id) return data.text;
+                var img = $(data.element).data('img');
+                return $("<span style='display: flex; align-items:center;'><img src='" + img + "' style='width: 24px;'>" + data.text + "</span>");
+            },
+            templateSelection: function (data) {
+                var img = $(data.element).data('img');
+                return $("<span style='display: flex; align-items:center;'><img src='" + img + "' style='width: 24px;'>" + data.text + "</span>");
+            }
+        })
+    })
+</script>
 
 <script>
     let rodadas = <?php echo json_encode($currLeague); ?>;
@@ -65,7 +166,10 @@ rodadas.forEach((rodada, index) => {
     if ((rodadas_unicas.indexOf(rodada.rodada) === -1)) {
         rodadas_unicas.push(rodada.rodada);
     }
-    criarCard(rodada, index);
+    if (rodada.rodada == 1) {
+        criarCard(rodada, index);
+    }
+    // criarCard(rodada, index);
 })
 rodadas_unicas.forEach((rodada, index) => {
     let option = `<option value="${rodada}" ${index === 0 ? 'selected' : ''}>Rodada ${rodada}</option>`;

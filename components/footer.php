@@ -3,7 +3,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
 <script>
     $('#content').summernote({
-        height: 250
+        height: 250,
+        callbacks: {
+            onImageUpload: function(files) {
+                let data = new FormData();
+                data.append("image", files[0]);
+
+                $.ajax({
+                    url: '/news/upload',
+                    type: 'POST',
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    success: function(response) {
+                        $('#content').summernote('insertImage', response);
+                    },
+                    error: function() {
+                        alert('Erro ao fazer upload da imagem.')
+                    }
+                })
+            }
+        }
     });
     
     $('#league_content_table').summernote({

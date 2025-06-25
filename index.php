@@ -6,6 +6,7 @@ require_once 'src/database.php';
 require_once 'src/session.php';
 require_once 'src/utils.php';
 
+
 date_default_timezone_set('America/Sao_Paulo');
 $session = new Session();
 
@@ -27,8 +28,8 @@ add_route('GET', '/auth', function () {
 add_route('GET', '/leagues', function () {
     add_route('GET', '/dashboard', 'LeagueController@dashboard');
     add_route('GET', '/add', 'LeagueController@add');
-    add_route('POST', '/save', 'LeagueController@save', true);
-    add_route('DELETE', '/delete', 'LeagueController@delete', true);
+    add_route('POST', '/save', 'LeagueController@save');
+    add_route('DELETE', '/delete', 'LeagueController@delete');
     add_route('GET', '/show/tabela', 'LeagueController@getClassification');
     add_route('GET', '/show/jogos', 'LeagueController@getMatches');
     add_route('POST', '/update', 'LeagueController@update');
@@ -38,13 +39,19 @@ add_route('GET', '/leagues', function () {
 add_route('GET', '/news', function () {
     add_route('GET', '/all', 'NewsController@all');
     add_route('GET', '/index', 'NewsController@index');
-    add_route('GET', '/form', 'NewsController@form', true);
-    add_route('POST', '/add', 'NewsController@create', true);
-    add_route('DELETE', '/delete', 'NewsController@delete', true);
-    add_route('GET', '/dashboard', 'NewsController@dashboard', true);
+    add_route('GET', '/form', 'NewsController@form');
+    add_route('POST', '/add', 'NewsController@create');
+    add_route('GET', '/delete', 'NewsController@delete');
+    add_route('GET', '/dashboard', 'NewsController@dashboard');
     add_route('POST', '/like', 'NewsController@like');
     add_route('POST', '/comment', 'NewsController@comment');
     add_route('GET', '/show', 'NewsController@show');
+    add_route('POST', '/upload', 'NewsController@uploadImage');
+    add_route('GET', '/video', 'NewsController@videoForm');
+    add_route('POST', '/video', 'NewsController@videoUpload');
+    add_route('GET', '/videos', 'NewsController@videoIndex');
+    add_route('GET', '/dashboardVideos', 'NewsController@videoDashboard');
+    add_route('GET', '/videoDelete', 'NewsController@deleteVideo');
 });
 
 // Automation Purposes
@@ -69,6 +76,10 @@ add_route('GET', '/mobile', function () {
         add_route('GET', '/getAll', 'MobileController@getAllContents');
         add_route('GET', '/getTags', 'MobileController@getPostTags');
         add_route('GET', '/getComments', 'MobileController@getComments');
+    });
+
+    add_route('GET', '/videos', function () {
+        add_route('GET', '/getAll', 'MobileController@getVideos');
     });
 
     add_route('GET', '/leagues', function () {

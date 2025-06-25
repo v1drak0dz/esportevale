@@ -66,7 +66,8 @@ class League
 
     public function getLeagues()
     {
-        $stmt = $this->pdo->query("SELECT * FROM leagues ORDER BY nome");
+        $stmt = $this->pdo->prepare("SELECT DISTINCT campeonato FROM partidas p");
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
@@ -91,10 +92,16 @@ class League
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getTeams($league_id) {
+        $stmt = $this->pdo->prepare("SELECT time_nome, brasao_url FROM times_campeonato WHERE campeonato = :league_id");
+        $stmt->bindParam(':league_id', $league_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function atualizarTimes($nome, $brasao, $liga)
     {
-        error_log("INSERT INTO times_campeonato (time_nome, campeonato, brasao_url) VALUES ('$nome', '$liga', '$brasao')");
-        $stmt = $this->pdo->prepare("INSERT INTO times_campeonato (time_nome, campeonato, brasao_url) VALUES (:nome, :liga, :brasao)");
+        $stmt = $this->pdo->prepare("INSERT INTO times_campeonato (time_nome, campeonato, brasao_url) SELECT :nome, :liga, :brasao WHERE NOT EXISTS (SELECT 1 FROM times_campeonato WHERE time_nome = :nome AND campeonato = :liga)");
         $stmt->bindParam(':nome', $nome, PDO::PARAM_STR);
         $stmt->bindParam(':brasao', $brasao, PDO::PARAM_STR);
         $stmt->bindParam(':liga', $liga, PDO::PARAM_STR);
@@ -125,7 +132,6 @@ class League
                 gols_casa = excluded.gols_casa,
                 gols_fora = excluded.gols_fora,
                 finalizada = excluded.finalizada;");
-        error_log('league' . $league);
 
         $stmt->bindParam(':league', $league, PDO::PARAM_STR);
         $stmt->bindParam(':group', $group, PDO::PARAM_STR);
@@ -168,6 +174,14 @@ class League
         $stmt->bindParam(":league", $id);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getRodadasNumber($id)
+    {
+        $stmt = $this->pdo->prepare("SELECT DISTINCT rodada FROM partidas WHERE campeonato = :campeonato");
+        $stmt->bindParam(":campeonato", $id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function update($values)

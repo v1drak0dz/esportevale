@@ -248,4 +248,13 @@ class MobileController extends BaseController
         echo json_encode(array('success' => true, 'rounds' => $rounds));
         exit;
     }
+
+    public function getVideos()
+    {
+        $results = $this->news->getVideos();
+        $videos = array();
+        foreach($results as $video) array_push($videos, $video);
+        echo json_encode(array('success' => true, 'videos' => $videos));
+        exit;
+    }
 }

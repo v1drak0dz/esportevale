@@ -9,8 +9,8 @@
               <img src="/content/radiotvaki.png" alt="RadioTvAki" class="img-fluid" style="max-width: 100px;">
             </div>
             <div>
-              <h5>RadioAki</h5>
-              <p class="mb-0">Fique por dentro das partidas de futebol, mesmo se não puder assistir ao vivo.</p>
+              <h5 class="text-bold text-danger" style='font-size: 24pt'><i>radiotvaki</i></h5>
+              <p class="mb-0" style="font-size: 10pt;">Fique por dentro das partidas de futebol, mesmo se não puder assistir ao vivo.</p>
             </div>
           </a>
         </div>
@@ -21,8 +21,8 @@
               <img src="/content/carroaki.png" alt="CarroAki" class="img-fluid" style="max-width: 100px;">
             </div>
             <div>
-              <h5>CarroAki</h5>
-              <p class="mb-0">Procurando um carro? Aqui você pode encontrar carros para todos os gostos.</p>
+              <h5 class="text-bold text-danger" style='font-size: 24pt'><i>carroaki</i></h5>
+              <p class="mb-0" style="font-size: 10pt;">Procurando um carro? Aqui você pode encontrar carros para todos os gostos.</p>
             </div>
           </a>
         </div>

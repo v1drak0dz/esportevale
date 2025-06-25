@@ -1,11 +1,15 @@
 <div class="container bg-light mt-2 py-2">
-    <form action="/news/add" method="POST">
+    <form action="/news/add" method="POST"  enctype="multipart/form-data">
         <div class="mb-3">
             <label for="title" class="form-label">Título</label>
             <input type="text" class="form-control" id="title" name="title" placeholder="Titulo da Notícia" value="<?php echo $news != null ? $news->post_title : ''; ?>">
         </div>
         <div class="mb-3">
-            <label for="tags" class="form-">Tags</label>
+            <label for="capa" class="form-label">Capa</label>
+            <input type="file" name="capa"  class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label for="tags" class="form-label">Tags</label>
             <input type="text" class="form-control" id="tags" name="tags" placeholder="Tags da Notícia: série A, Amador, Flamengo...">
         </div>
         <div class="mb-3">

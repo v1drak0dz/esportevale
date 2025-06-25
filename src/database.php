@@ -2,18 +2,22 @@
 
 class Database {
     private static $instance = null;
-    private $pdo;
-    private static $db_file = 'database.sqlite'; // Caminho para o arquivo SQLite
+    private $mysqli;
+
+    // Configurações de conexão com MySQL
+    private static $host = 'localhost';
+    private static $user = 'seu_usuario';
+    private static $pass = 'sua_senha';
+    private static $dbname = 'nome_do_banco';
 
     private function __construct() {
-        $dsn = 'sqlite:' . self::$db_file;
+        $this->mysqli = new mysqli(self::$host, self::$user, self::$pass, self::$dbname);
 
-        try {
-            $this->pdo = new PDO($dsn, null, null);
-            $this->createTables();
-        } catch (PDOException $e) {
-            die('Erro ao conectar ao banco de dados SQLite: ' . $e->getMessage());
+        if ($this->mysqli->connect_error) {
+            die('Erro de conexão com MySQL: ' . $this->mysqli->connect_error);
         }
+
+        $this->createTables();
     }
 
     public function __clone() {}
@@ -23,40 +27,43 @@ class Database {
         if (self::$instance === null) {
             self::$instance = new self();
         }
-        return self::$instance->pdo;
+        return self::$instance->mysqli;
     }
 
     private function createTables() {
-        $sql = "CREATE TABLE IF NOT EXISTS leagues (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL,
-            url TEXT NOT NULL,
-            tabela_html TEXT,
-            rodada_html TEXT,
-            atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP
-        );";
-        $this->pdo->exec($sql);
+        $this->mysqli->query("
+            CREATE TABLE IF NOT EXISTS leagues (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nome VARCHAR(255) NOT NULL,
+                url VARCHAR(255) NOT NULL,
+                tabela_html TEXT,
+                rodada_html TEXT,
+                atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
 
-        $sql = "CREATE TABLE IF NOT EXISTS posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT,
-            author INTEGER,
-            modified_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (author) REFERENCES users(id) ON DELETE SET NULL
-        );";
-        $this->pdo->exec($sql);
+        $this->mysqli->query("
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(100) NOT NULL UNIQUE,
+                email VARCHAR(100) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                active TINYINT(1) DEFAULT 1,
+                role VARCHAR(50) NOT NULL DEFAULT 'user',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
 
-        $sql = "CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
-            email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
-            active INTEGER DEFAULT 1,
-            role TEXT NOT NULL DEFAULT 'user',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );";
-        $this->pdo->exec($sql);
+        $this->mysqli->query("
+            CREATE TABLE IF NOT EXISTS posts (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                content TEXT,
+                author INT,
+                modified_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (author) REFERENCES users(id) ON DELETE SET NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
     }
 }

@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="container shadow rounded bg-light m-2 p-2">
+    <div class="shadow rounded bg-light m-2 p-2">
         <h2>Buscar Notícias</h2>
         <form action="/news/index" method="get">
             <div class="mb-3 d-flex">
@@ -8,7 +8,7 @@
             </div>
         </form>
     </div>
-    <div class="container bg-light shadow rounded m-2 p-2">
+    <div class="bg-light shadow rounded m-2 p-2">
         <h2>Notícias</h2>
         <ul class="list-group">
             <?php foreach ($newslist as $n): ?>
