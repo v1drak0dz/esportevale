@@ -70,7 +70,7 @@
         <hr class="my-2">
 
         <div class="container">
-            <?php $this->renderComments($news_commentary); ?>
+            <?php echo $commentaries; ?>
         </div>
     </div>
 </section>

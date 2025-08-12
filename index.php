@@ -11,6 +11,7 @@ date_default_timezone_set('America/Sao_Paulo');
 $session = new Session();
 
 add_route('GET', '/', 'HomeController@index');
+add_route('GET', '/test', 'HomeController@test');
 
 add_route('GET', '/auth', function () {
     add_route('GET', '/login', 'AuthController@loginPage');
@@ -33,6 +34,8 @@ add_route('GET', '/leagues', function () {
     add_route('GET', '/show/tabela', 'LeagueController@getClassification');
     add_route('GET', '/show/jogos', 'LeagueController@getMatches');
     add_route('POST', '/update', 'LeagueController@update');
+    add_route('GET', '/list', 'LeagueController@saveMatches');
+    add_route('POST', '/list', 'LeagueController@saveMatches');
 });
 
 // News Routes
@@ -56,10 +59,7 @@ add_route('GET', '/news', function () {
 
 // Automation Purposes
 add_route('GET', '/bot', function () {
-    add_route('POST', '/saveMatch', 'BotController@saveLeague');
-    add_route('POST', '/saveTeam', 'BotController@saveTeam');
-    add_route('POST', '/teams', 'BotController@saveTeams');
-    add_route('POST', '/matches', 'BotController@saveMatch');
+	add_route('POST', '/save', 'BotController@save');
 });
 
 // Mobile

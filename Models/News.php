@@ -7,93 +7,107 @@ class News {
     private $allowedTags;
 
     public function __construct() {
-        $this->db = Database::getInstance(); // Certifique-se que sua classe Database tem esse método
+        $this->db = Database::getInstance(); // mysqli connection
         $this->getQuery = 'SELECT p.capa as post_capa, p.id as post_id, p.title as post_title, p.content as post_content, p.modified_at as post_modified, p.created_at as post_created, u.id as post_author_id, u.name as post_author_name FROM posts p, users u WHERE p.author = u.id';
         $this->allowedTags = '<p><a><b><strong><i><em><ul><ol><li><br><span><img><h1><h2><h3><h4><h5><h6>';
     }
 
     public function getNews() {
-        $stmt = $this->db->prepare($this->getQuery . ' ORDER BY p.modified_at DESC');
-        $stmt->execute();
-        $items = array();
-        while ($row = $stmt->fetchObject()) {
-            array_push($items, $row);
+        $query = $this->getQuery . ' ORDER BY p.modified_at DESC';
+        $result = $this->db->query($query);
+        $items = [];
+        while ($row = $result->fetch_object()) {
+            $items[] = $row;
         }
         return $this->convertAndCheck($items);
     }
 
     public function getNewsByUser($user_id) {
-        $stmt = $this->db->prepare($this->getQuery . ' AND u.id = :user ORDER BY p.modified_at DESC');
-        $stmt->bindParam(':user', $user_id, PDO::PARAM_INT);
+        $query = $this->getQuery . ' AND u.id = ? ORDER BY p.modified_at DESC';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $user_id);
         $stmt->execute();
-        $items = array();
-        while ($row = $stmt->fetchObject()) {
-            array_push($items, $row);
+        $result = $stmt->get_result();
+        $items = [];
+        while ($row = $result->fetch_object()) {
+            $items[] = $row;
         }
+        $stmt->close();
         return $this->convertAndCheck($items);
     }
 
     public function getNewsById($id) {
-        $stmt = $this->db->prepare($this->getQuery . ' AND p.id = :id');
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $query = $this->getQuery . ' AND p.id = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id);
         $stmt->execute();
-        return $this->convertAndCheck($stmt->fetchObject());
+        $result = $stmt->get_result();
+        $item = $result->fetch_object();
+        $stmt->close();
+        return $this->convertAndCheck($item);
     }
 
     public function getNewsLimited($limit) {
-        $stmt = $this->db->prepare($this->getQuery . ' ORDER BY p.created_at DESC LIMIT :limit');
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $query = $this->getQuery . ' ORDER BY p.created_at DESC LIMIT ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $limit);
         $stmt->execute();
-        $items = array();
-        while ($row = $stmt->fetchObject()) {
-            array_push($items, $row);
+        $result = $stmt->get_result();
+        $items = [];
+        while ($row = $result->fetch_object()) {
+            $items[] = $row;
         }
+        $stmt->close();
         return $this->convertAndCheck($items);
     }
 
     private function convertAndCheck($returnvalue) {
-        if ($returnvalue) {
-            return $returnvalue;
-        } else {
-            return null;
-        }
+        return $returnvalue ?: null;
     }
 
     public function createPost($title, $content, $author, $capa) {
-        $stmt = $this->db->prepare('INSERT INTO posts (title, content, author, created_at, capa) VALUES (:title, :content, :author, :created_at, :capa)');
+        $query = 'INSERT INTO posts (title, content, author, created_at, capa) VALUES (?, ?, ?, ?, ?)';
+        $stmt = $this->db->prepare($query);
         $filteredContent = strip_tags($content, $this->allowedTags);
-        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
-        $stmt->bindParam(':content', $filteredContent, PDO::PARAM_STR);
-        $stmt->bindParam(':author', $author, PDO::PARAM_INT);
         $created_at = date('Y-m-d H:i:s');
-        $stmt->bindParam(':created_at', $created_at, PDO::PARAM_STR);
-        $stmt->bindParam(':capa', $capa, PDO::PARAM_STR);
+        $stmt->bind_param('ssiss', $title, $filteredContent, $author, $created_at, $capa);
         $stmt->execute();
-
-        return $this->db->lastInsertId();
+        $insertId = $stmt->insert_id;
+        $stmt->close();
+        return $insertId;
     }
 
     public function createTag($tag) {
-        $stmt = $this->db->prepare('INSERT OR IGNORE INTO tags (nome) VALUES (:tag)');
-        $stmt->bindParam(':tag', $tag, PDO::PARAM_STR);
+        // Insert or ignore pattern: MySQL doesn't have INSERT OR IGNORE, so use INSERT IGNORE
+        $query = 'INSERT IGNORE INTO tags (nome) VALUES (?)';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('s', $tag);
         $stmt->execute();
+        $stmt->close();
 
-        $stmt = $this->db->prepare('SELECT id FROM tags WHERE nome = :tag');
-        $stmt->bindParam(':tag', $tag, PDO::PARAM_STR);
+        $query = 'SELECT id FROM tags WHERE nome = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('s', $tag);
         $stmt->execute();
-        return $stmt->fetchColumn();
+        $result = $stmt->get_result();
+        $tagId = null;
+        if ($row = $result->fetch_assoc()) {
+            $tagId = $row['id'];
+        }
+        $stmt->close();
+        return $tagId;
     }
 
     public function createPostTag($post_id, $tag_id) {
-        $stmt = $this->db->prepare('INSERT INTO post_tags (post_id, tag_id) VALUES (:post_id, :tag_id)');
-        $stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
-        $stmt->bindParam(':tag_id', $tag_id, PDO::PARAM_INT);
+        $query = 'INSERT INTO post_tags (post_id, tag_id) VALUES (?, ?)';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('ii', $post_id, $tag_id);
         $stmt->execute();
+        $stmt->close();
     }
 
     public function addNews($title, $content, $tags, $author, $capa) {
         $postId = $this->createPost($title, $content, $author, $capa);
-
         foreach (explode(',', $tags) as $tag) {
             error_log('tag: ' . $tag);
             $tagId = $this->createTag(trim($tag));
@@ -102,144 +116,178 @@ class News {
     }
 
     public function getPostTags($id) {
-        $stmt = $this->db->prepare("SELECT t.nome FROM tags t, post_tags pt WHERE t.id = pt.tag_id AND pt.post_id = :post_id");
-        $stmt->bindParam(':post_id', $id, PDO::PARAM_INT);
+        $query = "SELECT t.nome FROM tags t, post_tags pt WHERE t.id = pt.tag_id AND pt.post_id = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id);
         $stmt->execute();
-        return $stmt->fetchAll();
+        $result = $stmt->get_result();
+        $tags = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        return $tags;
     }
 
-    public function getNewsBySearch($query)
+    public function getNewsBySearch($searchTerm)
     {
-        $query = "SELECT p.title, p.created_at, u.name FROM posts p, post_tags pt, tags t, users u WHERE u.id = p.author AND p.id = pt.post_id AND t.id = pt.tag_id";
-        $query .= " p.title LIKE :query OR p.content LIKE :query OR t.nome LIKE :query";
-        $query .= " ORDER BY created_at DESC";
+        $searchTerm = "%{$searchTerm}%";
+        $query = "SELECT p.title, p.created_at, u.name FROM posts p, post_tags pt, tags t, users u WHERE u.id = p.author AND p.id = pt.post_id AND t.id = pt.tag_id AND (p.title LIKE ? OR p.content LIKE ? OR t.nome LIKE ?) ORDER BY created_at DESC";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':query', $query, PDO::PARAM_STR);
+        $stmt->bind_param('sss', $searchTerm, $searchTerm, $searchTerm);
         $stmt->execute();
-        $items = array();
-        while ($row = $stmt->fetchObject()) {
-            array_push($items, $row);
+        $result = $stmt->get_result();
+        $items = [];
+        while ($row = $result->fetch_object()) {
+            $items[] = $row;
         }
+        $stmt->close();
         return $this->convertAndCheck($items);
     }
 
-    public function deleteNews($id) {
-        $stmt = $this->db->prepare('DELETE FROM posts WHERE id = :id');
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    public function deletePost($id)
+    {
+        $query = 'DELETE FROM posts WHERE id = ?';
+        $stmt = $this->db->prepare($query);
+
+        if ($stmt === false) {
+            throw new Exception('Erro ao preparar a query: ' . $this->db->error);
+        }
+
+        $stmt->bind_param('i', $id);
         $stmt->execute();
+
+        if ($stmt->affected_rows === 0) {
+            // Nenhum post deletado (ID não encontrado?)
+            error_log("Nenhum post deletado com id = $id");
+        }
+
+        $stmt->close();
     }
 
-    public function getNewsCommentary($id) {
-        $stmt = $this->db->prepare("SELECT c.*, u.name as user_name FROM comments c, users u WHERE u.id = c.author AND post_id = :post_id ORDER BY created_at ASC");
-        $stmt->execute(array(':post_id' => $id));
-        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    public function getNewsCommentary($id) {
+        $query = "SELECT c.*, u.name as user_name FROM comments c, users u WHERE u.id = c.author AND post_id = ? ORDER BY created_at ASC";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $comments = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
         return $comments;
     }
 
     public function saveCommentary($id, $content, $author) {
-        $stmt = $this->db->prepare('INSERT INTO comments (post_id, author, content) VALUES (:post_id, :author, :content)');
-        $stmt->bindParam(':post_id', $id, PDO::PARAM_INT);
-        $stmt->bindParam(':author', $author, PDO::PARAM_INT);
-        $stmt->bindParam(':content', $content, PDO::PARAM_STR);
+        $query = 'INSERT INTO comments (post_id, author, content) VALUES (?, ?, ?)';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('iis', $id, $author, $content);
         $stmt->execute();
+        $stmt->close();
     }
 
     public function postLikeCount($id) {
-        $stmt = $this->db->prepare('SELECT COUNT(id) FROM likes WHERE post_id = :post_id');
-        $stmt->bindParam(':post_id', $id, PDO::PARAM_INT);
+        $query = 'SELECT COUNT(id) as cnt FROM likes WHERE post_id = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id);
         $stmt->execute();
-        return $stmt->fetchColumn();
+        $result = $stmt->get_result();
+        $count = 0;
+        if ($row = $result->fetch_assoc()) {
+            $count = $row['cnt'];
+        }
+        $stmt->close();
+        return $count;
     }
 
     public function userLikedPost($user_id, $post_id) {
-        $stmt = $this->db->prepare('SELECT 1 FROM likes WHERE user_id = :user_id AND post_id = :post_id');
-        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        $stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
+        $query = 'SELECT 1 FROM likes WHERE user_id = ? AND post_id = ? LIMIT 1';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('ii', $user_id, $post_id);
         $stmt->execute();
-        return $stmt->fetchColumn() !== false;
+        $result = $stmt->get_result();
+        $liked = $result->num_rows > 0;
+        $stmt->close();
+        return $liked;
     }
 
     public function toggleLike($user_id, $post_id) {
         if ($this->userLikedPost($user_id, $post_id)) {
-            $stmt = $this->db->prepare('DELETE FROM likes WHERE user_id = :user_id AND post_id = :post_id');
+            $query = 'DELETE FROM likes WHERE user_id = ? AND post_id = ?';
+        } else {
+            $query = 'INSERT INTO likes (user_id, post_id) VALUES (?, ?)';
         }
-        else {
-            $stmt = $this->db->prepare('INSERT INTO likes (user_id, post_id) VALUES (:user_id, :post_id)');
-        }
-        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        $stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('ii', $user_id, $post_id);
         $stmt->execute();
+        $stmt->close();
     }
 
     public function getVideos() {
-        $stmt = $this->db->prepare("SELECT v.id as video_id, v.capa as video_capa, v.category as video_category, v.title as video_title, v.url as video_url, u.name as video_author, v.created_at as video_created_at FROM videos v, users u WHERE v.author = u.id ORDER BY v.created_at DESC");
-        $stmt->execute();
-        $items = array();
-        while ($row = $stmt->fetchObject()) {
-            array_push($items, $row);
+        $query = "SELECT v.id as video_id, v.capa as video_capa, v.category as video_category, v.title as video_title, v.url as video_url, u.name as video_author, v.created_at as video_created_at FROM videos v, users u WHERE v.author = u.id ORDER BY v.created_at DESC";
+        $result = $this->db->query($query);
+        $items = [];
+        while ($row = $result->fetch_object()) {
+            $items[] = $row;
         }
         return $this->convertAndCheck($items);
     }
 
     public function getVideosLimited($limit) {
-        $stmt = $this->db->prepare("SELECT v.id as video_id, v.capa as video_capa, v.category as video_category, v.title as video_title, v.url as video_url, u.name as video_author, v.created_at as video_created_at FROM videos v, users u WHERE v.author = u.id ORDER BY v.created_at DESC LIMIT :limit");
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $query = "SELECT v.id as video_id, v.capa as video_capa, v.category as video_category, v.title as video_title, v.url as video_url, u.name as video_author, v.created_at as video_created_at FROM videos v, users u WHERE v.author = u.id ORDER BY v.created_at DESC LIMIT ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $limit);
         $stmt->execute();
-        $items = array();
-        while ($row = $stmt->fetchObject()) {
-            array_push($items, $row);
+        $result = $stmt->get_result();
+        $items = [];
+        while ($row = $result->fetch_object()) {
+            $items[] = $row;
         }
+        $stmt->close();
         return $this->convertAndCheck($items);
     }
 
     public function deleteVideos($id) {
-        $stmt = $this->db->prepare('DELETE FROM videos WHERE id = :id');
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $query = 'DELETE FROM videos WHERE id = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id);
         $stmt->execute();
+        $stmt->close();
     }
 
     public function getVideoById($id) {
-        $stmt = $this->db->prepare('SELECT v.id as video_id, v.capa as video_capa, v.category as video_category, v.title as video_title, v.url as video_url, u.name as video_author, v.created_at as video_created_at FROM videos v, users u WHERE u.id = v.author AND v.id = :id');
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $query = 'SELECT v.id as video_id, v.capa as video_capa, v.category as video_category, v.title as video_title, v.url as video_url, u.name as video_author, v.created_at as video_created_at FROM videos v, users u WHERE u.id = v.author AND v.id = ?';
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $id);
         $stmt->execute();
-        return $stmt->fetchObject();
+        $result = $stmt->get_result();
+        $video = $result->fetch_object();
+        $stmt->close();
+        return $video;
     }
 
     public function saveVideo($id, $title, $url, $author, $category, $capa) {
         if ($id != null) {
-            $stmt = $this->db->prepare('
-                UPDATE videos 
-                   SET title = :title, url = :url, author = :author, category = :category, capa = :capa
-                 WHERE id = :id
-            ');
+            $query = 'UPDATE videos SET title = ?, url = ?, author = ?, category = ?, capa = ? WHERE id = ?';
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param('ssisii', $title, $url, $author, $category, $capa, $id);
         } else {
-            $stmt = $this->db->prepare('
-                INSERT INTO videos (title, url, author, category, capa)
-                VALUES (:title, :url, :author, :category, :capa)
-            ');
-        }
-        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
-        $stmt->bindParam(':url', $url, PDO::PARAM_STR);
-        $stmt->bindParam(':author', $author, PDO::PARAM_INT);
-        $stmt->bindParam(':category', $category, PDO::PARAM_STR);
-        $stmt->bindParam(':capa', $capa, PDO::PARAM_STR);
-        if ($id != null) {
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $query = 'INSERT INTO videos (title, url, author, category, capa) VALUES (?, ?, ?, ?, ?)';
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param('ssiss', $title, $url, $author, $category, $capa);
         }
         $stmt->execute();
+        $stmt->close();
     }
 
-    public function getVideosByQuery($query) {
-        $sql = "SELECT v.capa as video_capa, v.category as video_category, v.title as video_title, v.url as video_url, u.name as video_author, v.created_at as video_created_at FROM videos v, users u";
-        $sql .= " WHERE v.author = u.id AND (v.title LIKE :query OR v.category LIKE :query)  ORDER BY v.created_at DESC";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':query', $query, PDO::PARAM_STR);
+    public function getVideosByQuery($searchTerm) {
+        $searchTerm = "%{$searchTerm}%";
+        $query = "SELECT v.capa as video_capa, v.category as video_category, v.title as video_title, v.url as video_url, u.name as video_author, v.created_at as video_created_at FROM videos v, users u WHERE v.author = u.id AND (v.title LIKE ? OR v.category LIKE ?) ORDER BY v.created_at DESC";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('ss', $searchTerm, $searchTerm);
         $stmt->execute();
-        $items = array();
-        while ($row = $stmt->fetchObject()) {
-            array_push($items, $row);
+        $result = $stmt->get_result();
+        $items = [];
+        while ($row = $result->fetch_object()) {
+            $items[] = $row;
         }
+        $stmt->close();
         return $this->convertAndCheck($items);
     }
 }

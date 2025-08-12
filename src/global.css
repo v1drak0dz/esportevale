@@ -24,6 +24,7 @@ body {
 
 #header_banner {
     display: flex;
+    width: 100%;
 }
 
 #footer_banner {
@@ -36,6 +37,7 @@ body {
     }
     #footer_banner {
         display: flex;
+        width: 100%;
     }
     
 }

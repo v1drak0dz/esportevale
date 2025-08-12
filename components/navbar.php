@@ -28,7 +28,7 @@ function isActive($url) {
             <?php foreach($leagues as $league): ?>
 
               <li class="nav-item">
-                <a href="/leagues/show/tabela?campeonato=<?php echo $league->campeonato; ?>" class="nav-link"><?php echo $league->campeonato; ?></a>
+                <a href="/leagues/show/tabela?campeonato=<?php echo $league['campeonato']; ?>" class="nav-link"><?php echo $league['campeonato']; ?></a>
               </li>
 
             <?php endforeach; ?>

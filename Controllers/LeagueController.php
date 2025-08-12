@@ -6,10 +6,6 @@ class LeagueController  extends BaseController
     public function dashboard() {
         $leagueslist = $this->league->getLeagues();
         $leagues = $this->league->getLeagues();
-        if (!$leagueslist) {
-            $leagueslist = array();
-            Session::getInstance()->setAlert(array('type' => 'info', 'text' => 'Nenhuma liga encontrada.'));
-        }
         include_once('components/header.php');
         include_once('templates/leagues/dashboard.php');
         include_once('components/footer.php');
@@ -68,7 +64,7 @@ class LeagueController  extends BaseController
             header('Location: /error/404');
             exit;
         }
-        
+
         $leagues = $this->league->getLeagues();
         include_once('components/header.php');
         include_once('templates/leagues/index.php');
@@ -83,7 +79,34 @@ class LeagueController  extends BaseController
             header('Location: /error/404');
             exit;
         }
-        
+
+        $groupedLeague = array();
+        if ($currLeague[0]['grupo'] != null) {
+            foreach ($currLeague as $value) {
+                $grupo = $value['grupo'];
+
+                if (!isset($groupedLeague[$grupo])) {
+                    $groupedLeague[$grupo] = array();
+                }
+
+                $groupedLeague[$grupo][] = $value;
+            }
+        }
+
+        if (!empty($groupedLeague)) {
+            uksort($groupedLeague, function ($a, $b) {
+                preg_match('/(\d+)/', $a, $matchA);
+                preg_match('/(\d+)/', $b, $matchB);
+
+                $numA = isset($matchA[0]) ? (int)$matchA[0] : 0;
+                $numB = isset($matchB[0]) ? (int)$matchB[0] : 0;
+
+                if ($numA == $numB) return 0;
+
+                return ($numA < $numB) ? -1: 1;
+            });
+        }
+
         $matches = $this->league->getMatches($league_id);
         $rodada_atual_header = 0;
         for ($i = count($matches); $i > 0; $i--) {
@@ -98,6 +121,48 @@ class LeagueController  extends BaseController
         include_once('templates/leagues/index.php');
         include_once('components/footer.php');
     }
+
+    public function saveMatches() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $currLeague = $this->league->getMatches($_GET['campeonato']);
+            usort($currLeague, function($a, $b) {
+                $dataA = DateTime::createFromFormat('d/m/Y - H\hi', $a['data_partida']);
+                $dataB = DateTime::createFromFormat('d/m/Y - H\hi', $b['data_partida']);
+                return $dataA <=> $dataB;
+            });
+            include_once('components/header.php');
+            include_once('templates/leagues/list.php');
+            include_once('components/footer.php');
+            exit;
+        }
+
+        if (!isset($_POST['match']) || !is_array($_POST['match'])) {
+            header('Location: /leagues/dashboard');
+            exit;
+        }
+
+        foreach ($_POST['match'] as $id => $dados) {
+            // Prepara o array com os valores esperados
+            $values = [
+                'id' => (int)$dados['id'],
+                'gols_casa' => isset($dados['gols_casa']) ? (int)$dados['gols_casa'] : 0,
+                'gols_fora' => isset($dados['gols_fora']) ? (int)$dados['gols_fora'] : 0,
+                'finalizada' => isset($dados['finalizada']) ? (int)$dados['finalizada'] : 0
+            ];
+
+            // Chama o update da model
+            $this->league->update($values);
+        }
+
+        Session::getInstance()->setAlert([
+            'type' => 'success',
+            'text' => 'Partidas salvas com sucesso.'
+        ]);
+
+        header('Location: /leagues/dashboard');
+        exit;
+    }
+
 
     public function getMatches()
     {
@@ -123,6 +188,12 @@ class LeagueController  extends BaseController
                 array_push($rodadas_filtradas, $rodada);
             }
         }
+
+        usort($rodadas_filtradas, function($a, $b) {
+            $dataA = DateTime::createFromFormat('d/m/Y - H\hi', $a['data_partida']);
+            $dataB = DateTime::createFromFormat('d/m/Y - H\hi', $b['data_partida']);
+            return $dataA <=> $dataB;
+        });
 
         $rodadasRaw = $this->league->getRodadasNumber($league_id);
 

@@ -52,7 +52,7 @@
                                     <option data-img="<?php echo $team['brasao_url']; ?>" <?php echo $team['time_nome'] == $teams[$seleacted_team]['time_nome'] ? 'selected' : ''; ?> value="<?php echo $team['time_nome']; ?>">
                                         <?php echo $team['time_nome']; ?>
                                     </option>
-                                    
+
                                 <?php endforeach; ?>
                             </select>
                     </div>
@@ -88,7 +88,7 @@
 
 <script>
     $(document).ready(function() {
-        
+
         $("#home-team").select2({
             theme: 'bootstrap-5',
             templateResult: function (data) {
@@ -139,9 +139,9 @@
                 </div>
                 <div class="text-center mx-5 d-flex justify-content-center" style="font-size: 1.25rem;">
                     <input type="hidden" name="id" value="${partida.id}" />
-                    <input type="text" class="form-control text-center" name="gols_casa" value="${partida.gols_casa}" style="width: 50px;" />
+                    <input type="text" class="form-control text-center" name="gols_casa" value="${partida.finalizada == 1 ? partida.gols_casa : ''}" style="width: 50px;" />
                     <p class="fw-bold mx-2" style="font-size: 2rem">X</p>
-                    <input type="text" class="form-control text-center" name="gols_fora" value="${partida.gols_fora}" style="width: 50px;" />
+                    <input type="text" class="form-control text-center" name="gols_fora" value="${partida.finalizada == 1 ? partida.gols_fora : ''}" style="width: 50px;" />
                 </div>
                 <div class="d-flex flex-column justify-content-center align-items-center">
                     <img class="img-fluid me-2" style="width: 32px;" src="${partida.brasao_fora}" alt="">
@@ -184,7 +184,7 @@ rodadas_unicas.forEach((rodada, index) => {
 
 $('#cards-container').on('submit', 'form', function(e) {
     e.preventDefault();
-    
+
     var form = $(this)
     var url = form.attr('action')
     var data = form.serialize()

@@ -1,6 +1,10 @@
 <?php
 
 class HomeController extends BaseController {
+    public function test()
+    {
+        echo phpinfo();
+    }
 
     public function index() {
         $newslist = $this->news->getNewsLimited(5);
@@ -55,7 +59,7 @@ class HomeController extends BaseController {
         }
 
         $leagues = $this->league->getLeagues();
-        
+
         $cur_league = $this->league->getClassification('Brasileirão Série A');
         $rows_count = count($cur_league);
 

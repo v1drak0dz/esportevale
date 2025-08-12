@@ -2,6 +2,10 @@
 
 class NewsController extends BaseController
 {
+    private function renderNews($page, $data) {
+        $this->render('news/' . $page, $data);
+    }
+
     public function index()
     {
         if (isset($_GET['query'])) {
@@ -14,11 +18,7 @@ class NewsController extends BaseController
             $newslist = array();
             Session::getInstance()->setAlert(array('type' => 'info', 'text' => 'Nenhuma notícia encontrada.'));
         }
-
-        $leagues = $this->league->getLeagues();
-        include_once('components/header.php');
-        include_once('templates/news/index.php');
-        include_once('components/footer.php');
+        $this->renderNews('index', array("newslist" => $newslist));
     }
 
     public function dashboard()
@@ -28,10 +28,8 @@ class NewsController extends BaseController
             $newslist = array();
             Session::getInstance()->setAlert(array('type' => 'info', 'text' => 'Nenhuma notícia encontrada.'));
         }
-        $leagues = $this->league->getLeagues();
-        include_once('components/header.php');
-        include_once('templates/news/dashboard.php');
-        include_once('components/footer.php');
+
+        $this->renderNews('dashboard', array("newslist"=>$newslist));
     }
 
     public function show()
@@ -56,11 +54,10 @@ class NewsController extends BaseController
         if (!$tags) {
             $tags = array();
         }
-        $leagues = $this->league->getLeagues();
 
-        include_once('components/header.php');
-        include_once('templates/news/show.php');
-        include_once('components/footer.php');
+        $coments = $this->renderComments($news_commentary);
+
+        $this->renderNews('show', array("commentaries" => $coments, "news" => $news, "news_commentary" => $news_commentary, "relatedNews" => $relatedNews, "isLiked" => $isLiked, "likeCount" => $likeCount, "tags" => $tags));
     }
 
     public function all()
@@ -90,13 +87,12 @@ class NewsController extends BaseController
 
     public function videoForm()
     {
+        $video = null;
         if (isset($_GET['id'])) {
             $video = $this->news->getVideoById($_GET['id']);
         }
 
-        include_once('components/header.php');
-        include_once('templates/news/videoForm.php');
-        include_once('components/footer.php');
+        $this->renderNews('videoForm', array("video"=>$video));
     }
 
     public function deleteVideo()
@@ -149,9 +145,7 @@ class NewsController extends BaseController
     public function videoDashboard()
     {
         $videoslist = $this->news->getVideos();
-        include_once('components/header.php');
-        include_once('templates/news/videosDashboard.php');
-        include_once('components/footer.php');
+        $this->renderNews('videosDashboard', array("videoslist" => $videoslist));
     }
 
     public function videoIndex()
@@ -167,9 +161,7 @@ class NewsController extends BaseController
             Session::getInstance()->setAlert(array('type' => 'info', 'text' => 'Nenhuma notícia encontrada.'));
         }
 
-        include_once('components/header.php');
-        include_once('templates/news/videos.php');
-        include_once('components/footer.php');
+        $this->renderNews('videos', array("videoslist" => $videoslist));
     }
 
     public function comment()
@@ -209,10 +201,7 @@ class NewsController extends BaseController
             }
         }
 
-        $leagues = $this->league->getLeagues();
-        include_once('components/header.php');
-        include_once('templates/news/form.php');
-        include_once('components/footer.php');
+        $this->renderNews('form', array("news" => $news));
     }
 
     public function uploadImage()
@@ -312,8 +301,9 @@ class NewsController extends BaseController
     public function delete()
     {
         if (isset($_GET['id'])) {
-            $this->news->deleteNews($_GET['id']);
+            $this->news->deletePost($_GET['id']);
         }
+
         header('Location: /news/dashboard');
         exit;
     }

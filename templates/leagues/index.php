@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 $isTabela = strpos($_SERVER['REQUEST_URI'], 'tabela') !== false;
 
@@ -20,7 +20,56 @@ $isTabela = strpos($_SERVER['REQUEST_URI'], 'tabela') !== false;
     <div class="table-classification--expansive-wrapper">
         <?php if ($isTabela): ?>
 
-            <div class="rounded">
+            <div class="row rounded container">
+            <?php if (!empty($groupedLeague)): ?>
+                <div class="row">
+                <?php foreach($groupedLeague as $key => $group): ?>
+                    <div class="col-12">
+                        <table class="table rounded border mb-4">
+                            <thead>
+                                <tr><h3><?php echo $key; ?></h3></tr>
+                                <tr class="table-dark">
+                                    <th scope="col" class="text-center">#</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col" class="text-center">Pontos</th>
+                                    <th scope="col" class="text-center">J</th>
+                                    <th scope="col" class="text-center">V</th>
+                                    <th scope="col" class="text-center">E</th>
+                                    <th scope="col" class="text-center">D</th>
+                                    <th scope="col" class="text-center">GP</th>
+                                    <th scope="col" class="text-center">GC</th>
+                                    <th scope="col" class="text-center">SG</th>
+                                    <th scope="col" class="text-center">Aproveitamento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach($group as $index => $linha): ?>
+                                    <tr>
+                                        <td class="text-center"><?php echo $index + 1; ?></td>
+                                        <td>
+                                            <img class="img-fluid me-2" style="width: 24px;" src="<?php echo $linha['brasao']; ?>" alt="">
+                                            <?php echo $linha['time_nome']; ?>
+                                        </td>
+                                        <td class="text-center"><?php echo $linha['pontos']; ?></td>
+                                        <td class="text-center"><?php echo $linha['jogos']; ?></td>
+                                        <td class="text-center"><?php echo $linha['vitorias']; ?></td>
+                                        <td class="text-center"><?php echo $linha['empates']; ?></td>
+                                        <td class="text-center"><?php echo $linha['derrotas']; ?></td>
+                                        <td class="text-center"><?php echo $linha['gols_pro']; ?></td>
+                                        <td class="text-center"><?php echo $linha['gols_contra']; ?></td>
+                                        <td class="text-center"><?php echo $linha['saldo_gols']; ?></td>
+                                        <td class="text-center"><?php echo $linha['jogos'] > 0 ? round((($linha['pontos'] / ($linha['jogos'] * 3))*100), 2) . ' %' : '00.00 %'; ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+            </div>
+
+            <div class="row rounded container">
             <table class="table rounded border">
                 <thead>
                     <tr class="table-dark">
@@ -40,8 +89,8 @@ $isTabela = strpos($_SERVER['REQUEST_URI'], 'tabela') !== false;
                 <tbody>
                 <?php foreach($currLeague as $index => $linha): ?>
                     <?php
-                        if ($index < 5) $division = 'success';
-                        else if ($index >= 5 && $index < ($rows_count-5)) $division = '';
+                        if ($index < 4) $division = 'success';
+                        else if ($index >= 4 && $index < ($rows_count-4)) $division = '';
                         else $division = 'danger';
                     ?>
                         <tr class="table-<?php echo $division; ?>">
@@ -77,7 +126,7 @@ $isTabela = strpos($_SERVER['REQUEST_URI'], 'tabela') !== false;
                 <nav class="d-flex justify-content-center my-4">
                     <ul class="pagination">
                         <li class="page-item <?php echo ($rodada_atual <= $rodada_min) ? 'disabled' : ''; ?>">
-                            <a class="page-link" 
+                            <a class="page-link"
                             href="<?php echo ($rodada_atual <= $rodada_min) ? '#' : '/leagues/show/jogos?campeonato=' . $currLeague[0]['campeonato'] . '&rodada=' . ($rodada_atual - 1); ?>">
                             Anterior
                             </a>
@@ -90,7 +139,7 @@ $isTabela = strpos($_SERVER['REQUEST_URI'], 'tabela') !== false;
                         <?php endforeach; ?>
 
                         <li class="page-item <?php echo ($rodada_atual >= $rodada_max) ? 'disabled' : ''; ?>">
-                            <a class="page-link" 
+                            <a class="page-link"
                             href="<?php echo ($rodada_atual >= $rodada_max) ? '#' : '/leagues/show/jogos?campeonato=' . $currLeague[0]['campeonato'] . '&rodada=' . ($rodada_atual + 1); ?>">
                             Próximo
                             </a>

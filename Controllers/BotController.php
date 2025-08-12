@@ -1,6 +1,34 @@
 <?php
 
 class BotController extends BaseController {
+	public function save()
+	{
+		if (!isset($_POST['data'])) {
+			error_log("Nenhum dado recebido.");
+			return;
+		}
+
+		$payload = json_decode($_POST['data'], true);
+
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			error_log("Erro ao decodificar JSON: " . json_last_error_msg());
+			return;
+		}
+
+		foreach ($payload as $data) {
+			$this->league->save(
+				$data['gcasa'],
+				$data['gfora'],
+				$data['finalizada'],
+				$data['league'],
+				$data['data'],
+				$data['rodada'],
+				$data['tcasa'],
+				$data['tfora']
+			);
+		}
+	}
+	
     public function saveLeague()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

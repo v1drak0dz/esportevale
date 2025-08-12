@@ -10,8 +10,11 @@
         <ul class="list-group list-group-flush">
             <?php foreach ($leagueslist as $league): ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <p class="m-0"><?php echo $league->nome; ?></p>
-                    <a id="<?php echo str_replace(' ', '-',$league->nome); ?>" href="/leagues/add?campeonato=<?php echo $league->nome; ?>" class="btn btn-info">Atualizar</a>
+                    <p class="m-0"><?php echo $league['campeonato']; ?></p>
+                    <div class="btns">
+                    <a id="<?php echo str_replace(' ', '-',$league['campeonato']); ?>" href="/leagues/add?campeonato=<?php echo $league['campeonato']; ?>" class="btn btn-info">Atualizar</a>
+                    <a id="<?php echo str_replace(' ', '-',$league['campeonato']); ?>" href="/leagues/list?campeonato=<?php echo $league['campeonato']; ?>" class="btn btn-success">Nova Edição</a>
+                    </div>
                 </li>
             <?php endforeach; ?>
         </ul>

@@ -5,63 +5,92 @@ class Users {
     private $db; 
 
     public function __construct() {
+        // Supondo que Database::getInstance() retorne uma conexão mysqli
         $this->db = Database::getInstance();
     }
 
     public function checkAuth($user, $password) {
-        // Prepara a query
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = "SELECT id, username, email FROM users WHERE email = ? AND password = ?";
+        $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Erro na preparação da consulta: " . $this->db->error);
+        }
 
-        $stmt = $this->db->prepare("SELECT id, username, email FROM users WHERE email = :email AND password = :password");
+        $stmt->bind_param("ss", $user, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        // Executa a consulta com os parâmetros
-        $stmt->execute(array('email' => $user, 'password' => $password));
+        $userData = $result->fetch_assoc();
+        $stmt->close();
 
-        // Verifica se algum usuário foi retornado
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $user ? $user : null;
+        return $userData ? $userData : null;
     }
 
     public function createUser($name, $username, $email, $password) {
-        $stmt = $this->db->prepare('SELECT id FROM users WHERE username = :username OR email = :email');
-        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $sql = "SELECT id FROM users WHERE username = ? OR email = ?";
+        $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Erro na preparação da consulta: " . $this->db->error);
+        }
+
+        $stmt->bind_param("ss", $username, $email);
         $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
 
         if ($user) {
             return false;
         }
 
-        $stmt = $this->db->prepare('INSERT INTO users (name, username, email, password) VALUES (:name, :username, :email, :password)');
-        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-        $stmt->bindParam(':password', $password, PDO::PARAM_STR);
+        $sql = "INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Erro na preparação da consulta: " . $this->db->error);
+        }
+
+        $stmt->bind_param("ssss", $name, $username, $email, $password);
         $stmt->execute();
 
-        return $this->db->lastInsertId();
+        $insert_id = $stmt->insert_id;
+        $stmt->close();
+
+        return $insert_id;
     }
 
-    public function storeToken($userId, $token)
-    {
+    public function storeToken($userId, $token) {
+        // MySQL não tem INSERT OR REPLACE, usamos INSERT ... ON DUPLICATE KEY UPDATE
+        // Para isso, user_id deve ser chave única em user_tokens
 
-        $sql = "INSERT OR REPLACE INTO user_tokens (user_id, token, created_at, expires_at) VALUES (:user_id, :token, datetime('now'), NULL)";
+        $sql = "INSERT INTO user_tokens (user_id, token, created_at, expires_at) VALUES (?, ?, NOW(), NULL)
+                ON DUPLICATE KEY UPDATE token = VALUES(token), created_at = VALUES(created_at), expires_at = VALUES(expires_at)";
+
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
-        return $stmt->execute();
+        if (!$stmt) {
+            throw new Exception("Erro na preparação da consulta: " . $this->db->error);
+        }
+
+        $stmt->bind_param("is", $userId, $token);
+        $success = $stmt->execute();
+        $stmt->close();
+
+        return $success;
     }
 
-    // Validação do token
-    public function validateToken($token)
-    {
-
-        $sql = "SELECT user_id FROM user_tokens WHERE token = :token";
+    public function validateToken($token) {
+        $sql = "SELECT user_id FROM user_tokens WHERE token = ?";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':token', $token);
+        if (!$stmt) {
+            throw new Exception("Erro na preparação da consulta: " . $this->db->error);
+        }
+
+        $stmt->bind_param("s", $token);
         $stmt->execute();
+        $result = $stmt->get_result();
 
-        return $stmt->fetchColumn(); // retorna user_id ou false
+        $user_id = $result->fetch_assoc();
+        $stmt->close();
+
+        return $user_id ? $user_id['user_id'] : false;
     }
 }

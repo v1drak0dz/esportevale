@@ -5,13 +5,17 @@ class Database {
     private $mysqli;
 
     // Configurações de conexão com MySQL
-    private static $host = 'localhost';
-    private static $user = 'seu_usuario';
-    private static $pass = 'sua_senha';
-    private static $dbname = 'nome_do_banco';
+    private static $host = '10.88.0.2';
+    private static $user = 'root';
+    private static $pass = 'admin';
+    private static $dbname = 'esportevale';
+    // private static $user = 'esportevalecom';
+    // private static $pass = 'Mi,PyoHUm@lr';
+    // private static $dbname = 'esportev_radio';
 
     private function __construct() {
         $this->mysqli = new mysqli(self::$host, self::$user, self::$pass, self::$dbname);
+        $this->mysqli->set_charset('utf8mb4');
 
         if ($this->mysqli->connect_error) {
             die('Erro de conexão com MySQL: ' . $this->mysqli->connect_error);

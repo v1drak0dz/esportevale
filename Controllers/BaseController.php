@@ -17,4 +17,12 @@ class BaseController
     {
         return isset($_POST[$key]) ? $_POST[$key] : null;
     }
+
+    public function render($page, $data) {
+        extract($data);
+        $leagues = $this->league->getLeagues();
+        include_once('components/header.php');
+        include_once('templates/'.$page.'.php');
+        include_once('components/footer.php');
+    }
 }
