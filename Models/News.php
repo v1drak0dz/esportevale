@@ -143,24 +143,24 @@ class News {
     }
 
     public function deletePost($id)
-    {
-        $query = 'DELETE FROM posts WHERE id = ?';
-        $stmt = $this->db->prepare($query);
+{
+    $query = 'DELETE FROM posts WHERE id = ?';
+    $stmt = $this->db->prepare($query);
 
-        if ($stmt === false) {
-            throw new Exception('Erro ao preparar a query: ' . $this->db->error);
-        }
-
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
-
-        if ($stmt->affected_rows === 0) {
-            // Nenhum post deletado (ID não encontrado?)
-            error_log("Nenhum post deletado com id = $id");
-        }
-
-        $stmt->close();
+    if ($stmt === false) {
+        throw new Exception('Erro ao preparar a query: ' . $this->db->error);
     }
+
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+
+    if ($stmt->affected_rows === 0) {
+        // Nenhum post deletado (ID não encontrado?)
+        error_log("Nenhum post deletado com id = $id");
+    }
+
+    $stmt->close();
+}
 
 
     public function getNewsCommentary($id) {

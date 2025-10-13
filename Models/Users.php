@@ -2,7 +2,7 @@
 // Models/Users.php
 
 class Users {
-    private $db; 
+    private $db;
 
     public function __construct() {
         // Supondo que Database::getInstance() retorne uma conexão mysqli
@@ -10,13 +10,13 @@ class Users {
     }
 
     public function checkAuth($user, $password) {
-        $sql = "SELECT id, username, email FROM users WHERE email = ? AND password = ?";
+        $sql = "SELECT id, username, email FROM users WHERE (email = ? or username = ?) AND password = ?";
         $stmt = $this->db->prepare($sql);
         if (!$stmt) {
             throw new Exception("Erro na preparação da consulta: " . $this->db->error);
         }
 
-        $stmt->bind_param("ss", $user, $password);
+        $stmt->bind_param("sss", $user, $user, $password);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -24,6 +24,28 @@ class Users {
         $stmt->close();
 
         return $userData ? $userData : null;
+    }
+
+    public function updateAdmin($key, $value) {
+        $sql = "UPDATE users SET " . $key . " = ? WHERE username = 'admin'";
+        $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Erro na preparação da consulta: " . $this->db->error);
+        }
+
+        if ($key === 'password') {
+          $old = $value;
+          $value = md5($value);
+        }
+        $stmt->bind_param("s", $value);
+        $error = '';
+        if(!$stmt->execute()) {
+          $error = $stmt->error;
+        }
+        $stmt->close();
+        $rows_ff = $this->db->affected_rows;
+        $result = $this->db->query("SELECT * FROM users WHERE username='admin'");
+        echo json_encode(['success' => true, 'query' => $sql, 'password' => $value, 'old' => $old, 'key' => $key, 'has' => $result->num_rows, 'updated' => $rows_ff, 'error' => $error]);
     }
 
     public function createUser($name, $username, $email, $password) {

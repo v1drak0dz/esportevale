@@ -10,32 +10,35 @@ require_once 'src/utils.php';
 date_default_timezone_set('America/Sao_Paulo');
 $session = new Session();
 
-add_route('GET', '/', 'HomeController@index');
-add_route('GET', '/test', 'HomeController@test');
+add_route('GET', '/', 'BaseController@index');
 
 add_route('GET', '/auth', function () {
-    add_route('GET', '/login', 'AuthController@loginPage');
-    add_route('POST', '/login', 'AuthController@loginAction');
-
-    add_route('GET', '/register', 'AuthController@registerPage');
-    add_route('POST', '/register', 'AuthController@registerAction');
-
+    add_route('POST', '/login', 'AuthController@login');
     add_route('GET', '/logout', 'AuthController@logout');
+});
 
-    add_route('GET', '/forgot', 'AuthController@forgotPage');
-    add_route('POST', '/forgot', 'AuthController@forgotAction');
+add_route('GET', '/ligas', function () {
+  add_route('GET', '/lista', 'LigaController@lista');
+  add_route('POST', '/criar', 'LigaController@criar');
+});
+
+add_route('GET', '/jogos', function () {
+  add_route('GET', '/lista', 'JogoController@lista');
 });
 
 add_route('GET', '/leagues', function () {
     add_route('GET', '/dashboard', 'LeagueController@dashboard');
     add_route('GET', '/add', 'LeagueController@add');
     add_route('POST', '/save', 'LeagueController@save');
-    add_route('DELETE', '/delete', 'LeagueController@delete');
+    add_route('GET', '/delete', 'LeagueController@delete');
     add_route('GET', '/show/tabela', 'LeagueController@getClassification');
     add_route('GET', '/show/jogos', 'LeagueController@getMatches');
     add_route('POST', '/update', 'LeagueController@update');
     add_route('GET', '/list', 'LeagueController@saveMatches');
     add_route('POST', '/list', 'LeagueController@saveMatches');
+    add_route('GET', '/create', 'LeagueController@create');
+    add_route('POST', '/createLeague', 'LeagueController@createLeague');
+    add_route('POST', '/createMatch', 'LeagueController@createMatch');
 });
 
 // News Routes

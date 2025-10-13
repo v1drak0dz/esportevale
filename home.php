@@ -38,9 +38,9 @@
         <div class="my-2">
             <ul class="list-group">
                 <?php foreach ($leagues as $league): ?>
-                    <a class="list-group-item list-group-item-action my-2 rounded shadow" aria-current="true" href="/leagues/show/tabela?campeonato=<?php echo $league['campeonato']; ?>">
+                    <a class="list-group-item list-group-item-action my-2 rounded shadow" aria-current="true" href="/leagues/show/tabela?campeonato=<?php echo $league->campeonato; ?>">
                         <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1 has-text-uppercase w-100"><?php echo $league['campeonato']; ?></h5>
+                            <h6 class="mb-1 has-text-uppercase w-100"><?php echo $league->campeonato; ?></h5>
                         </div>
                     </a>
                 <?php endforeach; ?>

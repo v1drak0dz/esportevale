@@ -136,6 +136,40 @@ class League
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function createMatch($data) {
+      $stmt = $this->pdo->prepare("
+        INSERT INTO partidas (campeonato, grupo, rodada, data_partida, time_casa, time_fora, gols_casa, gols_fora, finalizada)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+      ");
+      $stmt->bind_param("ssisssiii",
+                        $data['campeonato'],
+                        $data['grupo'],
+                        $data['rodada'],
+                        $data['data_partida'],
+                        $data['time_casa'], $data['time_fora'], $data['gols_casa'], $data['gols_fora'], $data['finalizada']);
+      $stmt->execute();
+
+      $stmt = $this->pdo->prepare("SELECT * FROM times_campeonato WHERE time_nome = ? AND campeonato = ?");
+      $stmt->bind_param("ss", $data['time_casa'], $data['campeonato']);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      if ($result->num_rows == 0) {
+        $stmt = $this->pdo->prepare("INSERT INTO times_campeonato (time_nome, campeonato) VALUES (?, ?)");
+        $stmt->bind_param("ss", $data['time_casa'], $data['campeonato']);
+        $stmt->execute();
+      }
+
+      $stmt = $this->pdo->prepare("SELECT * FROM times_campeonato WHERE time_nome = ? AND campeonato = ?");
+      $stmt->bind_param("ss", $data['time_fora'], $data['campeonato']);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      if ($result->num_rows == 0) {
+        $stmt = $this->pdo->prepare("INSERT INTO times_campeonato (time_nome, campeonato) VALUES (?, ?)");
+        $stmt->bind_param("ss", $data['time_fora'], $data['campeonato']);
+        $stmt->execute();
+      }
+    }
+
     public function getRodadasNumber($id)
     {
         $stmt = $this->pdo->prepare("SELECT DISTINCT rodada FROM partidas WHERE campeonato = ?");
@@ -156,6 +190,12 @@ class League
         $stmt->execute();
     }
 
+    public function createLeague($value) {
+      $stmt = $this->pdo->prepare("INSERT INTO partidas (campeonato, grupo, rodada, data_partida, time_casa, time_fora, gols_casa, gols_fora, finalizada) VALUES (?, '', 1, '', '', '', 0, 0, 0)");
+      $stmt->bind_param('s', $value);
+      $stmt->execute();
+    }
+
 	public function save($gcasa, $gfora, $finalizada, $league, $data, $rodada, $tcasa, $tfora)
 	{
 		$sql = "UPDATE partidas
@@ -167,9 +207,15 @@ class League
 				   AND time_casa = ?
 				   AND time_fora = ?
 				   AND rodada = ?";
-		
+
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->bind_param('iiissssi', $gcasa, $gfora, $finalizada, $league, $data, $tcasa, $tfora, $rodada);
 		$stmt->execute();
 	}
+
+  public function delete($id) {
+    $stmt = $this->pdo->prepare("DELETE FROM partidas WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+  }
 }

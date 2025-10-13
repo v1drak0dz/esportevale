@@ -5,23 +5,23 @@ class Database {
     private $mysqli;
 
     // Configurações de conexão com MySQL
-    private static $host = '10.88.0.2';
+    private static $host = 'localhost';
     private static $user = 'root';
-    private static $pass = 'admin';
+    private static $pass = 'root';
     private static $dbname = 'esportevale';
-    // private static $user = 'esportevalecom';
-    // private static $pass = 'Mi,PyoHUm@lr';
-    // private static $dbname = 'esportev_radio';
 
     private function __construct() {
         $this->mysqli = new mysqli(self::$host, self::$user, self::$pass, self::$dbname);
-        $this->mysqli->set_charset('utf8mb4');
-
         if ($this->mysqli->connect_error) {
             die('Erro de conexão com MySQL: ' . $this->mysqli->connect_error);
         }
 
-        $this->createTables();
+        $this->mysqli->set_charset('utf8mb4');
+
+        $user = $this->mysqli->query("SELECT * FROM users WHERE username = 'admin'")->fetch_object();
+        if (!$user) {
+          $this->mysqli->query("INSERT INTO users (username, password, name) VALUES ('admin', '".password_hash('admin', PASSWORD_DEFAULT)."', 'Admin')");
+        }
     }
 
     public function __clone() {}
@@ -32,42 +32,5 @@ class Database {
             self::$instance = new self();
         }
         return self::$instance->mysqli;
-    }
-
-    private function createTables() {
-        $this->mysqli->query("
-            CREATE TABLE IF NOT EXISTS leagues (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                nome VARCHAR(255) NOT NULL,
-                url VARCHAR(255) NOT NULL,
-                tabela_html TEXT,
-                rodada_html TEXT,
-                atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        ");
-
-        $this->mysqli->query("
-            CREATE TABLE IF NOT EXISTS users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                username VARCHAR(100) NOT NULL UNIQUE,
-                email VARCHAR(100) NOT NULL UNIQUE,
-                password VARCHAR(255) NOT NULL,
-                active TINYINT(1) DEFAULT 1,
-                role VARCHAR(50) NOT NULL DEFAULT 'user',
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        ");
-
-        $this->mysqli->query("
-            CREATE TABLE IF NOT EXISTS posts (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                title VARCHAR(255) NOT NULL,
-                content TEXT,
-                author INT,
-                modified_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (author) REFERENCES users(id) ON DELETE SET NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        ");
     }
 }

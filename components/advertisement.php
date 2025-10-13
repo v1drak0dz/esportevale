@@ -1,6 +1,6 @@
-<div class="row justify-content-center w-100">
+<div class="row justify-content-center">
   <div class="col-12">
-    <div class="container bg-light py-2 mt-2 rounded shadow">
+    <div class="container bg-light py-2 mt-2 rounded shadow-sm">
       <h3>Conheça também!</h3>
       <div class="row justify-content-evenly gy-3">
         <div class="col-12 col-md-5 bg-white rounded shadow d-flex align-items-center p-2">

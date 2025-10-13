@@ -11,8 +11,8 @@
         <form class="form bg-body-tertiary p-3 rounded shadow my-2" method="post" action="/auth/login">
             <!-- Email input -->
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="nome@example.com">
+                <label for="text" class="form-label">Email</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="nome@example.com">
             </div>
             <!-- Password input -->
             <div class="mb-3">

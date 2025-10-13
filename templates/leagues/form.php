@@ -24,10 +24,11 @@
                 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/leagues/add" method="POST" class="row">
+                <form action="/leagues/createMatch" method="POST" class="row">
+                    <input type="hidden" name="campeonato" value="<?= $_GET['campeonato'] ?>">
                     <div class="mb-3 col-md-6">
                         <label for="date" class="form-label">Data</label>
-                        <input type="text" name="date" value="<?php echo date('d-m-Y'); ?>" class="form-control">
+                        <input type="datetime-local" name="date" id="date" class="form-control" value="<?= date('d/m/Y H:i') ?>">
                     </div>
                     <div class="mb-3 col-md-6">
                         <label for="round" class="form-label">Rodada</label>
@@ -35,34 +36,19 @@
                     </div>
                     <div class="mb-3 col-md-6">
                         <label for="home-team" class="form-label">Time Casa</label>
-                            <select name="home-team" id="home-team" class="form-select">
-                                <?php $seleacted_team = array_rand($teams); ?>
-                                <?php foreach($teams as $team): ?>
-                                    <option data-img="<?php echo $team['brasao_url']; ?>" <?php echo $team['time_nome'] == $teams[$seleacted_team]['time_nome'] ? 'selected' : ''; ?> value="<?php echo $team['time_nome']; ?>">
-                                        <?php echo $team['time_nome']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                        <input type="text" name="home-team" id="home-team" class="form-control">
                     </div>
                     <div class="mb-3 col-md-6">
                         <label for="outer-team" class="form-label">Time Fora</label>
-                            <select name="outer-team" id="outer-team" class="form-select">
-                                <?php $seleacted_team = array_rand($teams); ?>
-                                <?php foreach($teams as $team): ?>
-                                    <option data-img="<?php echo $team['brasao_url']; ?>" <?php echo $team['time_nome'] == $teams[$seleacted_team]['time_nome'] ? 'selected' : ''; ?> value="<?php echo $team['time_nome']; ?>">
-                                        <?php echo $team['time_nome']; ?>
-                                    </option>
-
-                                <?php endforeach; ?>
-                            </select>
+                        <input type="text" name="outer-team" id="outer-team" class="form-control">
                     </div>
                     <div class="mb-3 col-md-6">
                         <label for="home-goals" class="form-label">Gols Casa</label>
-                        <input type="number" name="home-goals" value='0' class="form-control">
+                        <input type="number" name="home-goals" value='' class="form-control">
                     </div>
                     <div class="mb-3 col-md-6">
                         <label for="outer-goals" class="form-label">Gols Fora</label>
-                        <input type="number" name="outer-goals" value='0' class="form-control">
+                        <input type="number" name="outer-goals" value='' class="form-control">
                     </div>
                     <div class="mb-3">
                         <input type="checkbox" class="form-check-input" name="finalizada">
@@ -125,7 +111,7 @@
     <div class="justify-content-center">
         <div class="card mb-3 p-0 mx-3">
             <div class="bg-primary text-white card-header d-flex justify-content-between align-items-center">
-                <p class="mb-0">${partida.data_partida}</p>
+                <p class="mb-0">${partida.data_partida.replace('T', ' ')}</p>
                 <p class="mb-0">Rodada ${partida.rodada}</p>
                 <select class="form-select form-select-sm w-auto" name="finalizada">
                     <option value="0" ${partida.finalizada == 0 ? 'selected' : ''}>Pendente</option>
@@ -149,7 +135,8 @@
                 </div>
             </div>
             <div class="card-footer d-flex justify-content-end align-items-center">
-            <button class='btn btn-success'>Salvar</button>
+              <a href="/leagues/delete?id=${partida.id}&campeonato=${partida.campeonato}" class='btn btn-outline-danger me-3'>Excluir</a>
+              <button class='btn btn-success'>Salvar</button>
             </div>
     </div>
         </div>
@@ -157,7 +144,6 @@
     `;
 
     $("#cards-container").append(card);
-    console.log("Funcionei?")
 }
 
 
@@ -192,6 +178,7 @@ $('#cards-container').on('submit', 'form', function(e) {
     $.post(url, data)
      .done(function (response) {
          showToast('success', 'Rodada atualizada com sucesso!')
+         location.reload()
      })
      .fail(function() {
          showToast('error', 'Erro ao atualizar rodada!')

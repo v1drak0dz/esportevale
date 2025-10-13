@@ -1,10 +1,11 @@
-<div class="container bg-white my-3">
+<div class="container bg-white my-2 py-2 rounded">
     <h2>Editar Partidas</h2>
     <form action="/leagues/list" method="POST">
         <table id="matchesTable" class="table table-bordered table-hover align-middle text-center" style="overflow-x: scroll;">
             <thead class="table-light">
                 <tr>
                     <th>Rodada</th>
+                    <th>Grupo</th>
                     <th>Data</th>
                     <th>Time Casa</th>
                     <th>Gols Casa</th>
@@ -13,6 +14,7 @@
                     <th>Finalizada</th>
                 </tr>
                 <tr>
+                    <th><input type="text" class="form-control form-control-sm" placeholder="Filtrar..." /></th>
                     <th><input type="text" class="form-control form-control-sm" placeholder="Filtrar..." /></th>
                     <th><input type="text" class="form-control form-control-sm" placeholder="Filtrar..." /></th>
                     <th><input type="text" class="form-control form-control-sm" placeholder="Filtrar..." /></th>
@@ -26,7 +28,8 @@
                 <?php foreach ($currLeague as $match): ?>
                     <tr>
                         <td><?= $match['rodada'] ?></td>
-                        <td><?= $match['data_partida'] ?></td>
+                        <td><input type="text" class="form-control text-center" name="grupo" id="grupo" value="<?= $match['grupo'] ?>"></td>
+                        <td><input type="datetime-local" class="form-control text-center" name="data_partida" id="data_partida" value="<?= $match['data_partida'] ?>"></td>
                         <td class="text-start"><?= $match['time_casa'] ?></td>
                         <td><input type="number" class="form-control text-center" name="match[<?= $match['id'] ?>][gols_casa]" value="<?= $match['finalizada'] ? $match['gols_casa'] : '' ?>" min="0" /></td>
                         <td><input type="number" class="form-control text-center" name="match[<?= $match['id'] ?>][gols_fora]" value="<?= $match['finalizada'] ? $match['gols_fora'] : '' ?>" min="0" /></td>

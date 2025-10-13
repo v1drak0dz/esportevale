@@ -1,7 +1,7 @@
 <section class="container my-5">
     <header class="container bg-light mb-2 rounded shadow d-flex justify-content-between align-items-center">
         <h1>Minhas Ligas</h1>
-        <a href="/leagues/add" class="btn btn-primary">Adicionar Liga</a>
+        <a href="/leagues/create" class="btn btn-primary">Adicionar Liga</a>
     </header>
 
     <?php include_once('components/alert.php'); ?>
@@ -20,3 +20,18 @@
         </ul>
     </main>
 </section>
+
+<div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <form action="/league/create" method="post">
+              <label class="form-label" for="campeonato">Insira o nome do campeonato</label>
+              <input type="text" name="campeonato" class="form-control" />
+          </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
