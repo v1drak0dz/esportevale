@@ -26,6 +26,11 @@ add_route('GET', '/jogos', function () {
   add_route('GET', '/lista', 'JogoController@lista');
 });
 
+add_route('GET', '/admin', function() {
+    add_route('GET', '/', 'AdminController@index');
+    add_route('GET', '/index', 'AdminController@index');
+});
+
 add_route('GET', '/leagues', function () {
     add_route('GET', '/dashboard', 'LeagueController@dashboard');
     add_route('GET', '/add', 'LeagueController@add');
